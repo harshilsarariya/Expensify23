@@ -2,23 +2,23 @@ const mongoose = require("mongoose");
 
 const GroupSchema = mongoose.Schema({
 	name: { type: String },
-	phoneNumber: { type: String },
-	budget: { type: Number },
-	spent: { type: Number },
-	personalTxs: {
+	description: { type: String },
+	members: [mongoose.Types.ObjectId],
+	txs: {
 		type: [
 			mongoose.Schema({
+				paidBy: mongoose.Types.ObjectId,
 				amount: Number,
 				category: String,
 				description: String,
-				owe: { type: Number, default: 0 },
 				lent: { type: Number, default: 0 },
-				// withUser: mongoose.Schema({
-				// 	userId: mongoose.Types.ObjectId,
-				// 	owe: { type: Number, default: 0 },
-				// 	lent: { type: Number, default: 0 },
-				// }),
-				withUser: mongoose.Types.ObjectId,
+				withUsers: [
+					mongoose.Schema({
+						userId: mongoose.Types.ObjectId,
+						owe: { type: Number, default: 0 },
+					}),
+				],
+				txDate: { type: Date, default: new Date() },
 			}),
 		],
 	},
