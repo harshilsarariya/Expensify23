@@ -14,15 +14,12 @@ const UserSchema = mongoose.Schema({
 				description: String,
 				owe: { type: Number, default: 0 },
 				lent: { type: Number, default: 0 },
-				// withUser: mongoose.Schema({
-				// 	userId: mongoose.Types.ObjectId,
-				// 	owe: { type: Number, default: 0 },
-				// 	lent: { type: Number, default: 0 },
-				// }),
 				withUser: mongoose.Types.ObjectId,
+				txDate: { type: String },
 			}),
 		],
 	},
+	groups: [mongoose.Types.ObjectId],
 });
 
 const UserModel = mongoose.model("users", UserSchema);
