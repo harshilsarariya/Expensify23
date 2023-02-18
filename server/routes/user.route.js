@@ -25,19 +25,48 @@ router.post("/add", (req, res) => {
 });
 
 // update name only
-router.post("/update", (req, res) => {
-  const { userId, firstName, lastName } = req.body;
-  UserModel.findOneAndUpdate(
-    { _id: userId },
-    { firstName, lastName },
-    { new: true }
-  )
+router.put("/update", (req, res) => {
+  const { id, name } = req.body;
+  UserModel.findOneAndUpdate({ _id: id }, { name }, { new: true })
     .then((result) => {
       return res.json({ success: true, data: result });
     })
     .catch((err) => {
       return res.json({ success: false, err });
     });
+});
+
+// update budget only
+router.put("/updateBudget/:id", async (req, res) => {
+  const { id } = req.params;
+  const { budget } = req.body;
+
+  if (!id) return res.status(401).json({ error: "Invalid Request" });
+
+  const user = await UserModel.findById(id);
+
+  if (!user) return res.status(401).json({ error: "User not found!" });
+
+  user.budget = budget;
+
+  await user.save();
+
+  res.json({
+    id: user._id,
+    budget,
+  });
+});
+
+// get budget only
+router.get("/getBudget/:id", async (req, res) => {
+  const { id } = req.params;
+  if (!id) return res.status(401).json({ error: "Invalid Request" });
+
+  const user = await UserModel.findById(id);
+
+  res.json({
+    budget: user.budget,
+  });
 });
 
 // add transaction
@@ -144,6 +173,21 @@ router.get("/:id", (req, res) => {
     });
 });
 
+router.get("/getName/:id", (req, res) => {
+  const { id } = req.params;
+  if (!id) {
+    return res.json({ success: false, data: "Please provide user  id  " });
+  }
+
+  UserModel.findOne({ _id: id })
+    .then((result) => {
+      return res.json({ success: true, data: result.name });
+    })
+    .catch((err) => {
+      return res.json({ success: false, err });
+    });
+});
+
 router.get("/fetchLatestTransactions/:id", async (req, res) => {
   const { id } = req.params;
 
@@ -171,6 +215,29 @@ router.get("/fetchCurrentMonthTransactions/:id", async (req, res) => {
     if (
       item.txDate !== undefined &&
       moment(item?.txDate).format("MM") === currMonth
+    ) {
+      tx.push(item);
+    }
+  });
+  res.json(tx);
+});
+
+router.get("/fetchTodaysTransactions/:id", async (req, res) => {
+  const { id } = req.params;
+
+  if (!id) return res.status(401).json({ error: "Invalid Request" });
+
+  const user = await UserModel.findById(id);
+
+  let currMonth = moment(Date.now()).format("MM");
+  let currDate = moment(Date.now()).format("DD");
+  let tx = new Array();
+
+  user.personalTxs.map((item) => {
+    if (
+      item.Date !== undefined &&
+      moment(item?.txDate).format("MM") === currMonth &&
+      moment(item?.txDate).format("DD") === currDate
     ) {
       tx.push(item);
     }

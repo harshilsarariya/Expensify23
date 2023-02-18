@@ -3,9 +3,9 @@ import React, { useEffect, useState } from "react";
 import { TouchableOpacity } from "react-native";
 import {
   FontAwesome5,
-  FontAwesome,
   MaterialCommunityIcons,
   Fontisto,
+  Foundation,
 } from "@expo/vector-icons";
 // import { addTransaction } from "../../api/user";
 import moment from "moment";
@@ -25,7 +25,7 @@ const AddExpense = ({ setTabShown, navigation }) => {
   const [isEnabled, setIsEnabled] = useState(false);
   const [amount, setAmount] = useState(0);
   const [description, setDescription] = useState("");
-  const [category, setCategory] = useState("Food");
+  const [category, setCategory] = useState("General");
   const [userId, setUserId] = useState("");
 
   const isFocused = useIsFocused();
@@ -87,32 +87,49 @@ const AddExpense = ({ setTabShown, navigation }) => {
         <View className="">
           <View className="flex flex-row justify-between mt-8">
             <Text className="text-[#BDBEC3]">Category</Text>
-            <TouchableOpacity>
-              <Text className="text-[#5651A0]">+ More Categories</Text>
-            </TouchableOpacity>
           </View>
           <View className="flex flex-row space-x-5 mt-4">
-            <View className="bg-[#2A2D3C] p-2 w-8 h-8 rounded-full items-center">
+            <TouchableOpacity
+              onPress={() => setCategory("Food")}
+              className="bg-[#2A2D3C] p-2 w-8 h-8 rounded-full items-center"
+            >
               <FontAwesome5 name="pizza-slice" size={15} color="#aaaaaa" />
-            </View>
+            </TouchableOpacity>
 
-            <View className="bg-[#2A2D3C] p-2 rounded-full w-8 h-8">
+            <TouchableOpacity
+              onPress={() => setCategory("Grocery")}
+              className="bg-[#2A2D3C] p-2 rounded-full w-8 h-8"
+            >
               <FontAwesome5 name="shopping-cart" size={16} color="#aaaaaa" />
-            </View>
-
-            <View className="bg-[#2A2D3C] p-2 rounded-full w-8 h-8">
-              <FontAwesome name="plane" size={20} color="#aaaaaa" />
-            </View>
-            <View className="bg-[#2A2D3C] p-2 rounded-full w-8 h-8">
-              <MaterialCommunityIcons
-                name="popcorn"
-                size={19}
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => setCategory("Ticket")}
+              className="bg-[#2A2D3C] p-2 rounded-full w-8 h-8"
+            >
+              <Foundation name="ticket" size={17} color="#aaaaaa" />
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => setCategory("Shopping")}
+              className="bg-[#2A2D3C] p-2 rounded-full w-8 h-8"
+            >
+              <Fontisto name="shopping-bag-1" size={19} color="#aaaaaa" />
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => setCategory("Bills")}
+              className="bg-[#2A2D3C] p-2 rounded-full w-8 h-8"
+            >
+              <FontAwesome5
+                name="money-bill-wave-alt"
+                size={15}
                 color="#aaaaaa"
               />
-            </View>
-            <View className="bg-[#2A2D3C] p-2 rounded-full w-8 h-8">
-              <Fontisto name="shopping-bag-1" size={19} color="#aaaaaa" />
-            </View>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => setCategory("Fuel")}
+              className="bg-[#2A2D3C] p-2 rounded-full w-8 h-8"
+            >
+              <MaterialCommunityIcons name="fuel" size={19} color="#aaaaaa" />
+            </TouchableOpacity>
           </View>
           <View className="mt-5 flex flex-row justify-between items-center">
             <Text className="text-[#CFD0D6]">

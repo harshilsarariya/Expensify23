@@ -11,8 +11,8 @@ import {
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import GeneralNavbar from "../GeneralNavbar";
-// import { addBudget } from "../../api/user";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { updateBudget } from "../../api/user";
 
 const config = {
   method: "PUT",
@@ -34,8 +34,13 @@ const BudgetCycle = () => {
   };
 
   const handleBudget = async () => {
-    // await addBudget(userId, obj, config);
-    Alert.alert("Success", "Budget set successfully");
+    const data = await updateBudget(userId, obj, config);
+
+    if (data.budget === budget) {
+      Alert.alert("Success", "Budget set successfully");
+    } else {
+      Alert.alert("Error", "Budget not set successfully");
+    }
   };
 
   useEffect(() => {

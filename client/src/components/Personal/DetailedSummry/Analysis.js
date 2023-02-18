@@ -16,6 +16,7 @@ import moment from "moment";
 import {
   fetchCategories,
   fetchCurrentMonthTransactions,
+  getBudget,
 } from "../../../api/user";
 
 const Analysis = ({ navigation }) => {
@@ -23,6 +24,11 @@ const Analysis = ({ navigation }) => {
   const [userId, setUserId] = useState("");
   const [visible, setVisible] = useState(false);
   const [graphData, setGraphData] = useState([]);
+  const [budget, setBudget] = useState(0);
+  const [budgetPercentage, setBudgetPercentage] = useState(0);
+  const [totalExpenseOfMonth, setTotalExpenseOfMonth] = useState();
+  const [categoryData, setCategoryData] = useState([]);
+
   const data = {
     labels: ["1-5", "6-10", "11-15", "16-20", "21-25", "25-30"],
     datasets: [
@@ -45,6 +51,14 @@ const Analysis = ({ navigation }) => {
     setUserId(await AsyncStorage.getItem("userId"));
   };
 
+  const handleBudget = async () => {
+    const data = await getBudget(userId);
+
+    setBudget(data.budget);
+    let budgetPer = (100 * totalExpenseOfMonth) / budget;
+    setBudgetPercentage(Math.ceil(budgetPer));
+  };
+
   const handleGraphData = async () => {
     const data = await fetchCurrentMonthTransactions(userId);
     const graphSplitData = new Array(5).fill(0);
@@ -55,14 +69,86 @@ const Analysis = ({ navigation }) => {
     setGraphData(graphSplitData);
   };
 
+  const handleChartData = () => {
+    let colorArr = [
+      "#ea6d95",
+      "#ffea00",
+      "#6f8ff9",
+      "#b04e43",
+      "#58CF6C",
+      "#7B43A1",
+    ];
+    let index = 0,
+      totalExpense = 0;
+    setCategoryData([]);
+    setTotalExpenseOfMonth(0);
+    if (Array.isArray(categories)) {
+      categories.map((item) => {
+        let schema = {
+          name: "",
+          total: 0,
+          color: colorArr[index],
+          legendFontColor: colorArr[index++],
+          legendFontSize: 15,
+        };
+        schema.name = item.category;
+        schema.total = item.total;
+        totalExpense += item.total;
+        setCategoryData((prev) => [...prev, schema]);
+      });
+      setTotalExpenseOfMonth(totalExpense);
+    }
+  };
   useEffect(() => {
     handleUserId();
   }, []);
 
   useEffect(() => {
     handleCategory();
+    handleBudget();
     handleGraphData();
   }, [userId]);
+
+  useEffect(() => {
+    handleChartData();
+  }, [categories]);
+
+  /*
+  const handleChartData = () => {
+    let colorArr = [
+      "#ea6d95",
+      "#ffea00",
+      "#6f8ff9",
+      "#b04e43",
+      "#58CF6C",
+      "#7B43A1",
+    ];
+    let index = 0,
+      totalExpense = 0;
+    setCategoryData([]);
+    setTotalExpenseOfMonth(0);
+    if (Array.isArray(categories)) {
+      categories.map((item) => {
+        let schema = {
+          name: "",
+          total: 0,
+          color: colorArr[index],
+          legendFontColor: colorArr[index++],
+          legendFontSize: 15,
+        };
+        schema.name = item.category;
+        schema.total = item.total;
+        totalExpense += item.total;
+        setCategoryData((prev) => [...prev, schema]);
+      });
+      setTotalExpenseOfMonth(totalExpense);
+    }
+  };
+
+
+
+
+*/
 
   return (
     <ScrollView className="mx-3" showsVerticalScrollIndicator={false}>
@@ -70,18 +156,18 @@ const Analysis = ({ navigation }) => {
 
       {/* drop down for selection of category and date */}
       <View className="flex flex-row mt-5">
-        <View className="flex flex-col bg-[#2A2E39] p-2 rounded-lg items-center mr-4">
+        {/* <View className="flex flex-col bg-[#2A2E39] p-2 rounded-lg items-center mr-4">
           <TouchableOpacity className="flex-row " onPress={toggleDropdown}>
             <Text className="text-[#6561CE]">All Expenses</Text>
             <AntDesign name="down" size={15} color="#6561CE" />
           </TouchableOpacity>
-        </View>
+        </View> */}
         <TouchableOpacity className="flex flex-row bg-[#2A2E39] p-2 rounded-lg items-center">
           <Text className="text-[#6561CE]">
             {moment().startOf("month").format("DD")} {moment().format("MMM")} -{" "}
             {moment().endOf("month").format("DD")} {moment().format("MMM")}{" "}
           </Text>
-          <AntDesign name="down" size={15} color="#6561CE" />
+          {/* <AntDesign name="down" size={15} color="#6561CE" /> */}
         </TouchableOpacity>
       </View>
 
@@ -92,17 +178,20 @@ const Analysis = ({ navigation }) => {
             <Text className="text-[#C8CACF]">
               Spends in {moment().startOf("month").format("DD")}{" "}
               {moment().format("MMM")} - {moment().endOf("month").format("DD")}{" "}
-              {moment().format("MMM")}{" "}
+              {moment().format("MMM")}
             </Text>
             <View className=" mt-3 flex flex-row">
-              <Text className="text-white">₹1,105.14</Text>
-              <Text className="text-gray-300 text-xs"> / ₹5,500</Text>
+              <Text className="text-white">₹ {totalExpenseOfMonth}</Text>
+              <Text className="text-gray-300 text-xs"> / ₹ {budget}</Text>
             </View>
           </View>
           <View>
-            <Text className="text-[#C8CACF]">20% budget used</Text>
+            <Text className="text-[#C8CACF]">
+              {budgetPercentage}% budget used
+            </Text>
             <View className="items-end mt-3">
-              <Progress.Pie progress={0.4} size={25} />
+              {/* <Progress.Pie progress={budgetPercentage / 100} size={25} /> */}
+              <Progress.Pie progress={0.2} size={25} />
             </View>
           </View>
         </View>

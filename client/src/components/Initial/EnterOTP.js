@@ -15,6 +15,13 @@ import { AntDesign } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { createUser, verifyOTP } from "../../api/user";
 
+const config = {
+  method: "POST",
+  headers: {
+    "content-type": "application/json",
+  },
+};
+
 const EnterOTP = ({ phoneNumber }) => {
   const navigation = useNavigation();
   const [otp, setOtp] = useState("");
@@ -23,25 +30,25 @@ const EnterOTP = ({ phoneNumber }) => {
     // API - verify & create user
     try {
       const data = await verifyOTP(phoneNumber, otp);
-      console.log(data);
-      if (data.data?.status === "approved") {
-        const userData = await createUser(
-          {
-            phoneNumber: phoneNumber,
-          },
-          config
-        );
+      // console.log(data);
+      // if (data?.valid) {
+      const userData = await createUser(
+        {
+          phoneNumber: phoneNumber,
+        },
+        config
+      );
 
-        await AsyncStorage.setItem("phoneNumber", phoneNumber);
-        await AsyncStorage.setItem("userId", userData.data._id);
-        await AsyncStorage.setItem("isVerified", "true");
+      await AsyncStorage.setItem("phoneNumber", phoneNumber);
+      await AsyncStorage.setItem("userId", userData.data._id);
+      await AsyncStorage.setItem("isVerified", "true");
 
-        navigation.navigate("Personal");
-      } else {
-        Alert.alert("Invalid OTP", "Please enter correct OTP!", [
-          { text: "Okay" },
-        ]);
-      }
+      navigation.navigate("Personal");
+      // } else {
+      //   Alert.alert("Invalid OTP", "Please enter correct OTP!", [
+      //     { text: "Okay" },
+      //   ]);
+      // }
     } catch (error) {
       console.log(error);
       Alert.alert("Error", error, [{ text: "Okay" }]);
@@ -56,7 +63,11 @@ const EnterOTP = ({ phoneNumber }) => {
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View className="mx-3 h-screen flex-1 ">
           <View className="mt-3 flex flex-row items-center">
-            <AntDesign name="left" size={20} color="white" />
+            <TouchableOpacity
+              onPress={() => navigation.navigate("MobileNumber")}
+            >
+              <AntDesign name="left" size={20} color="white" />
+            </TouchableOpacity>
             <Text className="text-xl text-white ml-10">Enter OTP</Text>
           </View>
           <Text className="text-white text-sm mt-5">
