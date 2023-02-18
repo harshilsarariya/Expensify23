@@ -1,6 +1,6 @@
 import { View, Text } from "react-native";
 import React, { useEffect, useState } from "react";
-import { fetchCategoryWiseExpense } from "../../../api/user";
+// import { fetchCategoryWiseExpense } from "../../../api/user";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import Card from "../Card";
@@ -14,8 +14,8 @@ const CategoryWiseExpense = ({}) => {
   const [expenseData, setExpenseData] = useState([]);
 
   const handleExpenses = async () => {
-    const data = await fetchCategoryWiseExpense(userId, category);
-    setExpenseData(data);
+    // const data = await fetchCategoryWiseExpense(userId, category);
+    // setExpenseData(data);
   };
 
   const handleUserId = async () => {

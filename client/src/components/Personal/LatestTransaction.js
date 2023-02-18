@@ -2,7 +2,7 @@ import { View, Text, ScrollView } from "react-native";
 import React, { useEffect, useState } from "react";
 import Card from "./Card";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { fetchLatestTransactions } from "../../api/user";
+
 
 const LatestTransaction = ({ navigation }) => {
   const [transactions, setTransactions] = useState([]);
