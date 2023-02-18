@@ -13,6 +13,7 @@ import {
 import React, { useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { AntDesign } from "@expo/vector-icons";
+import { sendOTP } from "../../api/user";
 
 const MobileNumber = ({ setPhoneNumber, phoneNumber }) => {
   const navigation = useNavigation();
@@ -21,9 +22,13 @@ const MobileNumber = ({ setPhoneNumber, phoneNumber }) => {
   const handleOTP = async () => {
     try {
       setLoading(true);
-      // API - Send OTP
+      const data = await sendOTP(phoneNumber);
       setLoading(false);
-      navigation.navigate("EnterOTP");
+      if (data.data?.status === "pending") {
+        navigation.navigate("EnterOTP");
+      } else {
+        Alert.alert("Error!", "Please enter valid number!", [{ text: "Okay" }]);
+      }
     } catch (error) {
       console.log(error);
       Alert.alert("Error", error, [{ text: "Okay" }]);
