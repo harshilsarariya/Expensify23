@@ -6,6 +6,7 @@ import { FontAwesome5, Feather } from "@expo/vector-icons";
 import InitialNavigation from "./InitialNavigation";
 import PersonalNavigation from "./PersonalNavigation";
 import ProfileNavigation from "./ProfileNavigation";
+import SplitNavigation from "./SplitNavigation";
 
 const Tab = createBottomTabNavigator();
 
@@ -56,6 +57,13 @@ const TabNavigation = () => {
           {(props) => (
             <ProfileNavigation
               setTabShown={setTabShown}
+              navigation={navigation}
+            />
+          )}
+        </Tab.Screen>
+        <Tab.Screen name="Split" options={{ tabBarStyle: { display: "none" } }}>
+          {(props) => (
+            <SplitNavigation
               navigation={navigation}
             />
           )}

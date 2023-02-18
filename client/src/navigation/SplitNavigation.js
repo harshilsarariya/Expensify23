@@ -3,15 +3,15 @@ import { createStackNavigator } from "@react-navigation/stack";
 import { useIsFocused } from "@react-navigation/native";
 import { useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import SplitHome from "../screen/Split/SplitHome";
-import NewGroup from "../screen/Split/NewGroup";
-import GroupChat from "../screen/Split/GroupChat";
-import Navbar from "../components/personal/Navbar";
+import SplitHome from "../screens/Split/SplitHome";
+import NewGroup from "../screens/Split/NewGroup";
+import GroupChat from "../screens/Split/GroupChat";
+// import Navbar from "../components/personal/Navbar";
 import TransDetails from "../components/split/ChatDetails";
 
 const Stack = createStackNavigator();
 
-const SplitNavigation = ({ setIsStartedFocus, navigation, setUserId }) => {
+const SplitNavigation = ({ navigation }) => {
 //   const isFocused = useIsFocused();
 //   const [phoneNo, setPhoneNo] = useState("");
 
