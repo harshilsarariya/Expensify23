@@ -71,7 +71,8 @@ export const fetchLatestTransactions = async (userId) => {
 
 export const fetchCategories = async (userId) => {
   try {
-    const { data } = await client.get(`/user/fetchCategories/${userId}`);
+    const { data } = await client.get(`/user/${userId}/catwise`);
+    // /:userId/catwise
     return data;
   } catch (error) {
     const { response } = error;
@@ -85,7 +86,7 @@ export const fetchCategories = async (userId) => {
 export const fetchCategoryWiseExpense = async (userId, category) => {
   try {
     const { data } = await client.get(
-      `/user/fetchCategoryWiseExpense/${userId}?category=${category}`
+      `/user/${userId}/cat?category=${category}`
     );
     return data;
   } catch (error) {
@@ -100,7 +101,7 @@ export const fetchCategoryWiseExpense = async (userId, category) => {
 export const fetchCurrentMonthTransactions = async (userId) => {
   try {
     const { data } = await client.get(
-      `/user/fetchCategoryWiseExpense/${userId}`
+      `/user/fetchCurrentMonthTransactions/${userId}`
     );
     return data;
   } catch (error) {
