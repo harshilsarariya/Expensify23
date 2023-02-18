@@ -5,12 +5,13 @@ import { useNavigation } from "@react-navigation/native";
 import { FontAwesome5, Feather } from "@expo/vector-icons";
 import InitialNavigation from "./InitialNavigation";
 import PersonalNavigation from "./PersonalNavigation";
+import ProfileNavigation from "./ProfileNavigation";
 
 const Tab = createBottomTabNavigator();
 
 const TabNavigation = () => {
   const navigation = useNavigation();
-  const [tabShown, setTabShown] = useState(false);
+  const [tabShown, setTabShown] = useState(true);
 
   return (
     <>
@@ -41,6 +42,19 @@ const TabNavigation = () => {
         >
           {(props) => (
             <PersonalNavigation
+              setTabShown={setTabShown}
+              navigation={navigation}
+            />
+          )}
+        </Tab.Screen>
+        <Tab.Screen
+          name="ProfileNavigation"
+          options={{
+            tabBarStyle: { display: "none" },
+          }}
+        >
+          {(props) => (
+            <ProfileNavigation
               setTabShown={setTabShown}
               navigation={navigation}
             />
