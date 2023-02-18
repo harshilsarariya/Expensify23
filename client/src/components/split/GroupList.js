@@ -19,11 +19,9 @@ const GroupList = () => {
                     {
                         [...Array(10)].map((val,idx) => {
                             return(
-                                <>
                                 <TouchableOpacity onPress={() => navigator.navigate("GroupChat")} key={idx}>
                                   <GroupCard/>
                                 </TouchableOpacity>
-                                </>
                             )
                         })
                     }

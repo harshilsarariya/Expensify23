@@ -67,7 +67,7 @@ const TabNavigation = () => {
       </Tab.Navigator>
 
       {/* Tab navigation */}
-      {/* {tabShown && (
+      {tabShown && (
         <View className="bg-[#2A2E39] flex flex-row justify-between py-3 px-16 rounded-tl-3xl rounded-r-3xl  absolute bottom-0 w-full">
           <TouchableOpacity
             className="items-center"
@@ -84,7 +84,7 @@ const TabNavigation = () => {
             <Text className="text-[#6561D2] text-xs mt-1">Split</Text>
           </TouchableOpacity>
         </View>
-      )} */}
+      )}
     </>
   );
 };
