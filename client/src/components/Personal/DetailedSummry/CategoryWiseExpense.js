@@ -1,4 +1,4 @@
-import { View, Text } from "react-native";
+import { View, Text, ScrollView } from "react-native";
 import React, { useEffect, useState } from "react";
 // import { fetchCategoryWiseExpense } from "../../../api/user";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -32,14 +32,14 @@ const CategoryWiseExpense = ({}) => {
   }, [userId]);
 
   return (
-    <View className="m-3">
+    <ScrollView className="m-3 mb-20">
       {expenseData !== undefined &&
         expenseData.map !== undefined &&
         expenseData.length > 0 &&
         expenseData.map((item, index) => (
           <Card key={index} navigation={navigation} item={item} />
         ))}
-    </View>
+    </ScrollView>
   );
 };
 
