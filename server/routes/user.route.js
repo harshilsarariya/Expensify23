@@ -131,4 +131,50 @@ router.post("/tx/delete", async (req, res) => {
 		});
 });
 
+// fetch all the trasactions of user with user id
+
+router.get("/:id", (req, res) => {
+	const { id } = req.params;
+	if (!id) {
+		return res.json({ success: false, data: "Please provide user  id  " });
+	}
+
+	UserModel.findOne({ _id: id })
+		.then((result) => {
+			return res.json({ success: true, data: result });
+		})
+		.catch((err) => {
+			return res.json({ success: false, err });
+		});
+});
+
+//  get  users transactions along with  categories
+router.get("/:id/cat", (req, res) => {
+	const { id } = req.params;
+	const { category } = req.query;
+
+	if (!id) return res.json({ msg: "User id is  required" });
+	if (!category) return res.json({ msg: "Category is required" });
+
+	UserModel.findOne({ _id: id, "personalTxs.category": category })
+		.select("personalTxs")
+		.then((result) => {
+			if (result) {
+				let filteredResult = result.personalTxs.filter(
+					(item) => item.category === category
+				);
+				return res.json({
+					success: true,
+					data: filteredResult || [],
+				});
+			} else {
+				return res.json({ success: true, data: [] });
+			}
+		})
+		.catch((err) => {
+			console.log(err);
+			return res.json({ success: false, err });
+		});
+});
+
 module.exports = router;
