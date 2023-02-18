@@ -35,8 +35,12 @@ router.post("/add", async (req, res) => {
 	});
 });
 
-// get group members
-router.get("/members", (req, res) => {});
+// get group details and members
+router.get("/:grpId", async (req, res) => {
+	const { grpId } = req.params;
+	const grp = await GroupModel.findOne({ _id: grpId });
+	return res.json({ success: true, data: grp });
+});
 
 // add member
 router.post("/members/add", async (req, res) => {
