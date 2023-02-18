@@ -4,13 +4,17 @@ import Balance from '../../components/split/Balance';
 import GroupChat from './GroupChat';
 import GroupList from '../../components/split/GroupList';
 import { ScrollView } from 'react-native';
+import GeneralNavbar from '../../components/GeneralNavbar';
 
 const SplitHome = ({navigation}) => {
   return (
-    <ScrollView className="p-4 mb-20">
+    <>
+    <GeneralNavbar title={"Split Expense"} navigationPath={"Personal"} />
+    <View className="p-4 mb-24">
       <Balance/>
       <GroupList />
-    </ScrollView>
+    </View>
+    </>
   )
 }
 

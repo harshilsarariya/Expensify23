@@ -7,45 +7,52 @@ import { Modal } from "react-native";
 import { useState } from "react";
 import ChatCard from "../../components/split/ChatCard";
 import BouncyCheckbox from "react-native-bouncy-checkbox";
+import GeneralNavbar from "../../components/GeneralNavbar";
 
 const NewGroup = () => {
     const user = [
         {
+            id:1,
         username:"Harshil Sarariya"
     },
         {
+            id:2,
         username:"Harshil Sarariya"
     },
         {
+            id:3,
         username:"Harshil Sarariya"
     },
         {
+            id:4,
         username:"Harshil Sarariya"
     },
         {
+            id:5,
         username:"Harshil Sarariya"
     },
         {
+            id:6,
         username:"Harshil Sarariya"
     },
         {
+            id:7,
         username:"Harshil Sarariya"
     },
         {
+            id:8,
         username:"Harshil Sarariya"
     },
 ]
     const [name,setName] = useState("");
   const [ModalOpen, setModalOpen] = useState(false);
-  const [users, setUsers] = useState([
-    {
-      username: "",
-    },
-  ]);
+  const [users, setUsers] = useState([{
+    username:"harshil"
+  }]);
   const [checked, setCHecked] = useState(false);
   return (
     <>
-      <CommonNav title={"Create Group"} />
+      <GeneralNavbar title={"Create Group"} navigationPath="MainSplit"/>
         {console.log(users)}
       <View className="my-20 px-4">
         <Modal
@@ -61,14 +68,14 @@ const NewGroup = () => {
                 return (
                   <>
                   <View key={idx} className="p-2 flex flex-row my-1 rounded-lg bg-slate-700">
-                    <BouncyCheckbox onPress={() => setUsers({...user,username:user[idx].username})} />
+                    <BouncyCheckbox onPress={(isChecked) => {console.log(isChecked);isChecked?  setUsers(() => [...users,user[idx]]) : users.splice(idx+1,1); setUsers(() => [...users])}} />
                     <Text className="text-white">{val.username}</Text>
                   </View>
                   </>
                 );
               })}
             </View>
-            <TouchableOpacity className="px-4 py-2 bg-violet-700 rounded-lg absolute bottom-6 left-6 w-full"><Text className="text-center text-white uppercase">Create Group</Text></TouchableOpacity>
+            <TouchableOpacity onPress={() => setModalOpen(!ModalOpen)} className="px-4 py-2 bg-violet-700 rounded-lg absolute bottom-6 left-6 w-full"><Text className="text-center text-white uppercase">Create Group</Text></TouchableOpacity>
           </View>
         </Modal>
         <View className="flex items-center">
@@ -96,9 +103,6 @@ const NewGroup = () => {
             </View>
           </TouchableOpacity>
         </View>
-
-        {/* chatting card */}
-        <ChatCard />
       </View>
     </>
   );
