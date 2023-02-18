@@ -11,9 +11,11 @@ import {
 import moment from "moment";
 import { useIsFocused } from "@react-navigation/native";
 import GeneralNavbar from "../GeneralNavbar";
+import { addTransaction } from "../../api/user";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const config = {
-  method: "POST",
+  method: "PUT",
   headers: {
     "content-type": "application/json",
   },
@@ -24,24 +26,42 @@ const AddExpense = ({ setTabShown, navigation }) => {
   const [amount, setAmount] = useState(0);
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState("Food");
-  const [split, setSplit] = useState("No");
+  const [userId, setUserId] = useState("");
 
   const isFocused = useIsFocused();
   const handleExpense = async () => {
-    // const data = await addTransaction(userId, obj, config);
-    // if (data.user.status.acknowledged) {
-    navigation.goBack(null);
-    // }
+    const obj = {
+      amount: amount,
+      category: category,
+      description: description,
+      owe: 0,
+      lent: 0,
+      withUser: userId,
+      id: userId,
+    };
+
+    const data = await addTransaction(obj, config);
+    console.log(data);
+    if (data.success) {
+      navigation.goBack(null);
+    }
+  };
+
+  const handleUserId = async () => {
+    await AsyncStorage.setItem("userId", "63f079bc145c6eb4ec252f67");
+    const id = await AsyncStorage.getItem("userId");
+    setUserId(id);
   };
 
   const toggleSwitch = () => setIsEnabled((previousState) => !previousState);
 
   useEffect(() => {
     setTabShown(false);
+    handleUserId();
   }, []);
 
   useEffect(() => {
-    setTabShown(true);
+    setTabShown(false);
   }, [isFocused]);
 
   return (
@@ -54,6 +74,7 @@ const AddExpense = ({ setTabShown, navigation }) => {
             className="text-[#C9CACD] text-xl"
             placeholderTextColor="#C9CACD"
             onChangeText={setAmount}
+            keyboardType="decimal-pad"
           />
           <TextInput
             placeholder="What was this expense for?"
@@ -104,7 +125,7 @@ const AddExpense = ({ setTabShown, navigation }) => {
               value={isEnabled}
             />
           </View>
-          <View className="items-center top-[420] ">
+          <View className="items-center top-[380] ">
             <TouchableOpacity
               className="bg-[#5F68D1] w-full p-2 mt-2 items-center rounded-md"
               onPress={handleExpense}
