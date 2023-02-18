@@ -177,4 +177,46 @@ router.get("/:id/cat", (req, res) => {
 		});
 });
 
+// get users transaction for all categories
+router.get("/:userId/catwise", async (req, res) => {
+	const { userId } = req.params;
+	if (!userId) return res.status(401).json({ error: "Invalid Request" });
+
+	const user = await UserModel.find({
+		$and: [{ _id: userId }],
+	});
+
+	const categoryMap = new Map();
+
+	user[0].personalTxs.map((item) => {
+		if (item?.category !== undefined) {
+			if (categoryMap.get(item?.category) === undefined) {
+				categoryMap.set(item?.category, { expense: 0, total: 0 });
+			}
+			categoryMap.get(item?.category).expense++;
+			if (item?.amount !== undefined) {
+				categoryMap.get(item?.category).total += parseInt(item?.amount);
+			}
+		}
+	});
+
+	const cateArr = new Array();
+
+	var iterator_obj = categoryMap.entries();
+	let arr;
+	while ((arr = iterator_obj.next().value)) {
+		cateArr.push(arr);
+	}
+
+	let finalObj = new Array();
+	for (let index = 0; index < cateArr.length; index++) {
+		let myObj = {
+			category: cateArr[index][0],
+			expense: cateArr[index][1].expense,
+			total: cateArr[index][1].total,
+		};
+		finalObj.push(myObj);
+	}
+	res.json(finalObj);
+});
 module.exports = router;
