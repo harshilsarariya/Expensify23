@@ -4,6 +4,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { useNavigation } from "@react-navigation/native";
 import { FontAwesome5, Feather } from "@expo/vector-icons";
 import InitialNavigation from "./InitialNavigation";
+import PersonalNavigation from "./PersonalNavigation";
 
 const Tab = createBottomTabNavigator();
 
@@ -17,7 +18,7 @@ const TabNavigation = () => {
         screenOptions={{
           headerShown: false,
         }}
-        initialRouteName="Initial"
+        initialRouteName="Personal"
       >
         <Tab.Screen
           name="Initial"
@@ -29,6 +30,19 @@ const TabNavigation = () => {
             <InitialNavigation
               navigation={navigation}
               setTabShown={setTabShown}
+            />
+          )}
+        </Tab.Screen>
+        <Tab.Screen
+          name="Personal"
+          options={{
+            tabBarStyle: { display: "none" },
+          }}
+        >
+          {(props) => (
+            <PersonalNavigation
+              setTabShown={setTabShown}
+              navigation={navigation}
             />
           )}
         </Tab.Screen>
