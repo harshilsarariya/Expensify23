@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const moment = require("moment");
 
 const UserSchema = mongoose.Schema({
   name: { type: String },
@@ -19,6 +20,7 @@ const UserSchema = mongoose.Schema({
         // 	lent: { type: Number, default: 0 },
         // }),
         withUser: mongoose.Types.ObjectId,
+        txDate: { type: String },
       }),
     ],
   },
