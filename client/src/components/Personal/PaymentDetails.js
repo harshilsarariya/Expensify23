@@ -25,9 +25,9 @@ const PaymentDetails = ({ navigation }) => {
         <View className=" flex flex-row justify-between">
           <View>
             <Text className="text-[#B2B2B6] text-base">
-              Your {item.Description} Share
+              Your {item.description} Share
             </Text>
-            <Text className="text-white mt-2 text-lg"> ₹ {item.Amount}</Text>
+            <Text className="text-white mt-2 text-lg"> ₹ {item.amount}</Text>
           </View>
           <View className="items-center">
             <Text className="text-[#9c93d4] text-base"></Text>
@@ -45,11 +45,11 @@ const PaymentDetails = ({ navigation }) => {
 
           <View className="flex flex-row justify-between mt-2">
             <Text className="text-[#C0BFC0]">Total Amount</Text>
-            <Text className="text-[#e4e3ea]">₹ {item.Amount}</Text>
+            <Text className="text-[#e4e3ea]">₹ {item.amount}</Text>
           </View>
           <View className="flex flex-row justify-between mt-2">
             <Text className="text-[#C0BFC0]">Owner's Name</Text>
-            <Text className="text-[#e4e3ea]">{item.From}</Text>
+            <Text className="text-[#e4e3ea]">{item.from}</Text>
           </View>
           <View className="flex flex-row justify-between mt-2">
             <Text className="text-[#C0BFC0]">Owner's Mobile No</Text>

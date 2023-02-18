@@ -16,12 +16,12 @@ const Card = ({ navigation, item }) => {
       </View>
       <View className="flex flex-row justify-between ml-5 w-[65vw]">
         <View>
-          <Text className="text-[#AFB0B4] text-xs">{item.Category}</Text>
-          <Text className="text-white mt-2">{item.Description}</Text>
+          <Text className="text-[#AFB0B4] text-xs">{item.category}</Text>
+          <Text className="text-white mt-2">{item.description}</Text>
         </View>
         <View className="items-end">
           <Text className="text-[#AFB0B4] text-xs ">Your Share</Text>
-          <Text className="text-white mt-2">₹{item.Amount}</Text>
+          <Text className="text-white mt-2">₹{item.amount}</Text>
         </View>
         <View className="mt-2">
           <AntDesign name="right" size={24} color="#6561CE" />

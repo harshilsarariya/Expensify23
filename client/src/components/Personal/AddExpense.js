@@ -38,6 +38,7 @@ const AddExpense = ({ setTabShown, navigation }) => {
       lent: 0,
       withUser: userId,
       id: userId,
+      txDate: moment(Date.now()).format(),
     };
 
     const data = await addTransaction(obj, config);

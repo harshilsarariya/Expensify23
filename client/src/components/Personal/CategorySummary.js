@@ -2,9 +2,9 @@ import React, { useEffect, useState } from "react";
 import { View, Text, Dimensions, TouchableOpacity } from "react-native";
 import * as Progress from "react-native-progress";
 import { PieChart } from "react-native-chart-kit";
-// import { fetchCategories, getBudget } from "../../api/user";
 import moment from "moment";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { fetchCategories } from "../../api/user";
 
 const CategorySummary = ({ navigation }) => {
   const [categories, setCategories] = useState([]);
@@ -15,29 +15,7 @@ const CategorySummary = ({ navigation }) => {
   const [budgetPercentage, setBudgetPercentage] = useState(0);
 
   const handleCategory = async () => {
-    // const data = await fetchCategories(userId);
-    const data = [
-      {
-        category: "Food",
-        expense: 8,
-        total: 19567,
-      },
-      {
-        category: "Shopping",
-        expense: 1,
-        total: 2000,
-      },
-      {
-        category: "Shopping2",
-        expense: 2,
-        total: 5000,
-      },
-      {
-        category: "Games",
-        expense: 1,
-        total: 15000,
-      },
-    ];
+    const data = await fetchCategories(userId);
     setCategories(data);
   };
 

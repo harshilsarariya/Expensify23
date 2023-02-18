@@ -13,6 +13,7 @@ import React, { useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { AntDesign } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
+import { createUser, verifyOTP } from "../../api/user";
 
 const EnterOTP = ({ phoneNumber }) => {
   const navigation = useNavigation();
@@ -20,11 +21,31 @@ const EnterOTP = ({ phoneNumber }) => {
 
   const handleVerification = async () => {
     // API - verify & create user
-    await AsyncStorage.setItem("phoneNumber", phoneNumber);
-    await AsyncStorage.setItem("isVerified", "true");
-    await AsyncStorage.setItem("userId", "63d2d29b6c769b20162037b2");
+    try {
+      const data = await verifyOTP(phoneNumber, otp);
+      console.log(data);
+      if (data.data?.status === "approved") {
+        const userData = await createUser(
+          {
+            phoneNumber: phoneNumber,
+          },
+          config
+        );
 
-    navigation.navigate("Personal");
+        await AsyncStorage.setItem("phoneNumber", phoneNumber);
+        await AsyncStorage.setItem("userId", userData.data._id);
+        await AsyncStorage.setItem("isVerified", "true");
+
+        navigation.navigate("Personal");
+      } else {
+        Alert.alert("Invalid OTP", "Please enter correct OTP!", [
+          { text: "Okay" },
+        ]);
+      }
+    } catch (error) {
+      console.log(error);
+      Alert.alert("Error", error, [{ text: "Okay" }]);
+    }
   };
 
   return (
