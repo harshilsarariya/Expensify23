@@ -12,8 +12,10 @@ import {
 import React, { useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { AntDesign } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
 
 const EnterOTP = ({ phoneNumber }) => {
+  const navigation = useNavigation();
   const [otp, setOtp] = useState("");
 
   const handleVerification = async () => {
