@@ -4,7 +4,7 @@ import * as Progress from "react-native-progress";
 import { PieChart } from "react-native-chart-kit";
 import moment from "moment";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { fetchCategories } from "../../api/user";
+import { fetchCategories, getBudget } from "../../api/user";
 
 const CategorySummary = ({ navigation }) => {
   const [categories, setCategories] = useState([]);
@@ -24,10 +24,10 @@ const CategorySummary = ({ navigation }) => {
   };
 
   const handleBudget = async () => {
-    // const data = await getBudget(userId);
-    const data = { budget: 50000 };
+    const data = await getBudget(userId);
+
     setBudget(data.budget);
-    let budgetPer = (100 * 41567) / budget;
+    let budgetPer = (100 * totalExpenseOfMonth) / budget;
     setBudgetPercentage(Math.ceil(budgetPer));
   };
 

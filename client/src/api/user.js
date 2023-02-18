@@ -72,7 +72,6 @@ export const fetchLatestTransactions = async (userId) => {
 export const fetchCategories = async (userId) => {
   try {
     const { data } = await client.get(`/user/${userId}/catwise`);
-    // /:userId/catwise
     return data;
   } catch (error) {
     const { response } = error;
@@ -128,13 +127,27 @@ export const fetchTodaysTransactions = async (userId) => {
   }
 };
 
-export const addBudget = async (userId, object, config) => {
+export const updateBudget = async (userId, object, config) => {
   try {
     const { data } = await client.put(
-      `/user/addBudget/${userId}`,
+      `/user/updateBudget/${userId}`,
       object,
       config
     );
+
+    return data;
+  } catch (error) {
+    const { response } = error;
+    if (response?.data) {
+      return response.data;
+    }
+    return { error: error.message || error };
+  }
+};
+
+export const updateName = async (userId, object, config) => {
+  try {
+    const { data } = await client.put(`/user/update`, object, config);
     return data;
   } catch (error) {
     const { response } = error;
@@ -148,6 +161,19 @@ export const addBudget = async (userId, object, config) => {
 export const getBudget = async (userId) => {
   try {
     const { data } = await client.get(`/user/getBudget/${userId}`);
+    return data;
+  } catch (error) {
+    const { response } = error;
+    if (response?.data) {
+      return response.data;
+    }
+    return { error: error.message || error };
+  }
+};
+
+export const getName = async (userId) => {
+  try {
+    const { data } = await client.get(`/user/getName/${userId}`);
     return data;
   } catch (error) {
     const { response } = error;
