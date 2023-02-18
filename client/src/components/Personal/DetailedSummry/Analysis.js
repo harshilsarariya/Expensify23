@@ -12,10 +12,10 @@ import * as Progress from "react-native-progress";
 import { BarChart } from "react-native-chart-kit";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import CardCategory from "./CardCategory";
-import {
-  fetchCategories,
-  fetchCurrentMonthTransactions,
-} from "../../../api/user";
+// import {
+//   fetchCategories,
+//   fetchCurrentMonthTransactions,
+// } from "../../../api/user";
 import moment from "moment";
 
 const Analysis = ({ navigation }) => {
@@ -68,14 +68,14 @@ const Analysis = ({ navigation }) => {
   };
 
   const handleGraphData = () => {
-    const data = fetchCurrentMonthTransactions(userId);
-    let daysArr = new Array();
+    // const data = fetchCurrentMonthTransactions(userId);
+    // let daysArr = new Array();
 
-    for (
-      let index = 0;
-      index < moment().endOf("month").format("MM");
-      index++
-    ) {}
+    // for (
+    //   let index = 0;
+    //   index < moment().endOf("month").format("MM");
+    //   index++
+    // ) {}
   };
 
   useEffect(() => {

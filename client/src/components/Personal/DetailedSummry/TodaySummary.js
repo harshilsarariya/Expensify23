@@ -4,7 +4,7 @@ import { AntDesign } from "@expo/vector-icons";
 import * as Progress from "react-native-progress";
 import { LineChart } from "react-native-chart-kit";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { fetchTodaysTransactions } from "../../../api/user";
+// import { fetchTodaysTransactions } from "../../../api/user";
 import Card from "../Card";
 
 const data = {
@@ -29,8 +29,8 @@ const TodaySummary = ({ navigation }) => {
   };
 
   const handleTransaction = async () => {
-    const data = await fetchTodaysTransactions(userId);
-    setTransactions(data);
+    // const data = await fetchTodaysTransactions(userId);
+    // setTransactions(data);
   };
 
   useEffect(() => {
