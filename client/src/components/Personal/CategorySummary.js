@@ -33,12 +33,12 @@ const CategorySummary = ({ navigation }) => {
 
   const handleChartData = () => {
     let colorArr = [
-      "#ea6d95",
-      "#ffea00",
-      "#6f8ff9",
-      "#b04e43",
-      "#58CF6C",
-      "#7B43A1",
+      "#e9c46a",
+      "#ffbe0b",
+      "#fb5607",
+      "#ff006e",
+      "#8338ec",
+      "#3a86ff",
     ];
     let index = 0,
       totalExpense = 0;
