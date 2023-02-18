@@ -3,19 +3,21 @@ import { View } from "react-native";
 import { AntDesign } from '@expo/vector-icons';
 import { useNavigation } from "@react-navigation/native";
 import { TouchableWithoutFeedback, TouchableOpacity} from "react-native";
+import { ScrollView } from "react-native-gesture-handler";
 
 
 const GroupList = () => {
     const navigator = useNavigation();
     return(
         <>
-            <View className="flex flex-row justify-between mt-4">
+            <View className="flex flex-row justify-between my-4">
                 <Text className="text-white font-medium text-xl">Groups</Text>
-                <TouchableWithoutFeedback onPress={() => navigator.navigate("CreateGroup")}><Text className="text-purple-400 font-medium"><AntDesign name="plus" size={16} color="#c084fc" /> Create Group</Text></TouchableWithoutFeedback>
+                <TouchableWithoutFeedback onPress={() => navigator.navigate("CreateGroup")}><Text className="text-indigo-600 font-medium"><AntDesign name="plus" size={16} color="#6366f1" /> Create Group</Text></TouchableWithoutFeedback>
             </View>
-                <View className="flex space-y-4 my-4">
+            <ScrollView>
+                <View className="flex space-y-4 mb-4">
                     {
-                        [...Array(8)].map((val,idx) => {
+                        [...Array(10)].map((val,idx) => {
                             return(
                                 <>
                                 <TouchableOpacity onPress={() => navigator.navigate("GroupChat")} key={idx}>
@@ -26,6 +28,7 @@ const GroupList = () => {
                         })
                     }
                 </View>
+            </ScrollView>
         </>
     )
 }
