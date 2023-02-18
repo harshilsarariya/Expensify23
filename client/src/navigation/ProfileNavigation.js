@@ -4,6 +4,7 @@ import React, { useEffect } from "react";
 import BudgetCycle from "../components/Profile/BudgetCycle";
 import Profile from "../components/Profile/Profile";
 import Setting from "../components/Profile/Setting";
+import UpdateProfile from "../components/Profile/UpdateProfile";
 
 const Stack = createStackNavigator();
 
@@ -19,8 +20,9 @@ const ProfileNavigation = ({ setTabShown }) => {
       initialRouteName="Profile"
       screenOptions={{ headerShown: false }}
     >
-      <Stack.Screen name="Profile">{(props) => <Profile />}</Stack.Screen>
+      <Stack.Screen name="Profile">{(props) => <Profile/>}</Stack.Screen>
       <Stack.Screen name="Settings">{(props) => <Setting />}</Stack.Screen>
+      <Stack.Screen name="UpdateProfile">{(props) => <UpdateProfile/>}</Stack.Screen>
       <Stack.Screen name="BudgetCycle">
         {(props) => <BudgetCycle />}
       </Stack.Screen>

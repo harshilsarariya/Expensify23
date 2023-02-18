@@ -16,7 +16,7 @@ const Setting = () => {
       <GeneralNavbar title={"Settings"} navigationPath={"Profile"} />
       <View className="mt-5">
         <View className="flex flex-row space-x-6 mx-auto my-2">
-          <TouchableOpacity className="bg-[#2A2E39] w-36 p-2 pl-3 rounded-lg">
+          <TouchableOpacity onPress={() => navigation.navigate("UpdateProfile")} className="bg-[#2A2E39] w-36 p-2 pl-3 rounded-lg">
             <FontAwesome name="user" size={24} color="#FBB567" />
             <Text className="text-white text-base mt-2">Personal Settings</Text>
           </TouchableOpacity>
