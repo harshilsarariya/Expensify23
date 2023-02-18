@@ -7,7 +7,7 @@ import EnterOTP from "../components/Initial/EnterOTP";
 const Stack = createStackNavigator();
 
 const InitialNavigation = ({ navigation, setTabShown }) => {
-  const [phoneNo, setPhoneNo] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
 
   useEffect(() => {
     setTabShown(false);
@@ -15,17 +15,24 @@ const InitialNavigation = ({ navigation, setTabShown }) => {
 
   return (
     <Stack.Navigator
-      initialRouteName="GetStarted"
+      initialRouteName="MobileNumber"
       screenOptions={{ headerShown: false }}
     >
       <Stack.Screen name="GetStarted">
         {(props) => <GettingStarted navigation={navigation} />}
       </Stack.Screen>
       <Stack.Screen name="MobileNumber">
-        {(props) => <MobileNumber setPhoneNo={setPhoneNo} phoneNo={phoneNo} />}
+        {(props) => (
+          <MobileNumber
+            setPhoneNumber={setPhoneNumber}
+            phoneNumber={phoneNumber}
+          />
+        )}
       </Stack.Screen>
       <Stack.Screen name="EnterOTP">
-        {(props) => <EnterOTP navigation={navigation} />}
+        {(props) => (
+          <EnterOTP navigation={navigation} phoneNumber={phoneNumber} />
+        )}
       </Stack.Screen>
     </Stack.Navigator>
   );
