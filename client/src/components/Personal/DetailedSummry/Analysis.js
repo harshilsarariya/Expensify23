@@ -12,22 +12,22 @@ import * as Progress from "react-native-progress";
 import { BarChart } from "react-native-chart-kit";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import CardCategory from "./CardCategory";
-// import {
-//   fetchCategories,
-//   fetchCurrentMonthTransactions,
-// } from "../../../api/user";
 import moment from "moment";
+import {
+  fetchCategories,
+  fetchCurrentMonthTransactions,
+} from "../../../api/user";
 
 const Analysis = ({ navigation }) => {
   const [categories, setCategories] = useState([]);
   const [userId, setUserId] = useState("");
   const [visible, setVisible] = useState(false);
-
+  const [graphData, setGraphData] = useState([]);
   const data = {
-    labels: ["1-5", "6-10", "11-15", "16-20", "21-25", "25-28"],
+    labels: ["1-5", "6-10", "11-15", "16-20", "21-25", "25-30"],
     datasets: [
       {
-        data: [20, 45, 28, 80, 56, 15],
+        data: graphData,
       },
     ],
   };
@@ -37,29 +37,7 @@ const Analysis = ({ navigation }) => {
   };
 
   const handleCategory = async () => {
-    // const data = await fetchCategories(userId);
-    const data = [
-      {
-        category: "Food",
-        expense: 8,
-        total: 19567,
-      },
-      {
-        category: "Shopping",
-        expense: 1,
-        total: 2000,
-      },
-      {
-        category: "Shopping2",
-        expense: 2,
-        total: 5000,
-      },
-      {
-        category: "Games",
-        expense: 1,
-        total: 15000,
-      },
-    ];
+    const data = await fetchCategories(userId);
     setCategories(data);
   };
 
@@ -67,15 +45,14 @@ const Analysis = ({ navigation }) => {
     setUserId(await AsyncStorage.getItem("userId"));
   };
 
-  const handleGraphData = () => {
-    // const data = fetchCurrentMonthTransactions(userId);
-    // let daysArr = new Array();
-
-    // for (
-    //   let index = 0;
-    //   index < moment().endOf("month").format("MM");
-    //   index++
-    // ) {}
+  const handleGraphData = async () => {
+    const data = await fetchCurrentMonthTransactions(userId);
+    const graphSplitData = new Array(5).fill(0);
+    data?.forEach((item) => {
+      let index = item?.txDate?.substring(8, 10);
+      graphSplitData[parseInt(index) % 5] += item.amount;
+    });
+    setGraphData(graphSplitData);
   };
 
   useEffect(() => {
@@ -84,6 +61,7 @@ const Analysis = ({ navigation }) => {
 
   useEffect(() => {
     handleCategory();
+    handleGraphData();
   }, [userId]);
 
   return (
@@ -132,7 +110,6 @@ const Analysis = ({ navigation }) => {
         {/* Chart for representing monthly expense */}
         <View className="mt-3">
           <BarChart
-            // style={graphStyle}
             data={data}
             width={Dimensions.get("window").width - [48]}
             height={220}

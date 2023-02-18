@@ -1,5 +1,5 @@
 const UserModel = require("../models/user.model");
-
+const moment = require("moment");
 const router = require("express").Router();
 
 // insert user
@@ -42,7 +42,8 @@ router.post("/update", (req, res) => {
 
 // add transaction
 router.put("/tx/add", async (req, res) => {
-  const { amount, category, description, withUser, id, owe, lent } = req.body;
+  const { amount, category, description, withUser, id, owe, lent, txDate } =
+    req.body;
 
   const txAdder = await UserModel.findOneAndUpdate(
     { _id: id },
@@ -55,6 +56,7 @@ router.put("/tx/add", async (req, res) => {
           owe,
           lent,
           withUser,
+          txDate,
         },
       },
     },
@@ -128,89 +130,124 @@ router.post("/tx/delete", async (req, res) => {
 // fetch all the trasactions of user with user id
 
 router.get("/:id", (req, res) => {
-	const { id } = req.params;
-	if (!id) {
-		return res.json({ success: false, data: "Please provide user  id  " });
-	}
+  const { id } = req.params;
+  if (!id) {
+    return res.json({ success: false, data: "Please provide user  id  " });
+  }
 
-	UserModel.findOne({ _id: id })
-		.then((result) => {
-			return res.json({ success: true, data: result });
-		})
-		.catch((err) => {
-			return res.json({ success: false, err });
-		});
+  UserModel.findOne({ _id: id })
+    .then((result) => {
+      return res.json({ success: true, data: result });
+    })
+    .catch((err) => {
+      return res.json({ success: false, err });
+    });
+});
+
+router.get("/fetchLatestTransactions/:id", async (req, res) => {
+  const { id } = req.params;
+
+  if (!id) return res.status(401).json({ error: "Invalid Request" });
+
+  const user = await UserModel.find({ _id: id });
+
+  res.json({
+    transactions: user[0].personalTxs.reverse().slice(0, 5),
+  });
+});
+
+router.get("/fetchCurrentMonthTransactions/:id", async (req, res) => {
+  const { id } = req.params;
+
+  if (!id) return res.status(401).json({ error: "Invalid Request" });
+
+  const user = await UserModel.findById(id);
+
+  let currMonth = moment(Date.now()).format("MM");
+
+  let tx = new Array();
+
+  user.personalTxs.map((item) => {
+    if (
+      item.txDate !== undefined &&
+      moment(item?.txDate).format("MM") === currMonth
+    ) {
+      tx.push(item);
+    }
+  });
+
+  res.json(tx);
 });
 
 //  get  users transactions along with  categories
 router.get("/:id/cat", (req, res) => {
-	const { id } = req.params;
-	const { category } = req.query;
+  const { id } = req.params;
+  const { category } = req.query;
 
-	if (!id) return res.json({ msg: "User id is  required" });
-	if (!category) return res.json({ msg: "Category is required" });
+  if (!id) return res.json({ msg: "User id is  required" });
+  if (!category) return res.json({ msg: "Category is required" });
 
-	UserModel.findOne({ _id: id, "personalTxs.category": category })
-		.select("personalTxs")
-		.then((result) => {
-			if (result) {
-				let filteredResult = result.personalTxs.filter(
-					(item) => item.category === category
-				);
-				return res.json({
-					success: true,
-					data: filteredResult || [],
-				});
-			} else {
-				return res.json({ success: true, data: [] });
-			}
-		})
-		.catch((err) => {
-			console.log(err);
-			return res.json({ success: false, err });
-		});
+  UserModel.findOne({ _id: id, "personalTxs.category": category })
+    .select("personalTxs")
+    .then((result) => {
+      if (result) {
+        let filteredResult = result.personalTxs.filter(
+          (item) => item.category === category
+        );
+        return res.json({
+          success: true,
+          data: filteredResult || [],
+        });
+      } else {
+        return res.json({ success: true, data: [] });
+      }
+    })
+    .catch((err) => {
+      console.log(err);
+      return res.json({ success: false, err });
+    });
 });
 
 // get users transaction for all categories
 router.get("/:userId/catwise", async (req, res) => {
-	const { userId } = req.params;
-	if (!userId) return res.status(401).json({ error: "Invalid Request" });
+  const { userId } = req.params;
+  if (!userId) return res.status(401).json({ error: "Invalid Request" });
 
-	const user = await UserModel.find({
-		$and: [{ _id: userId }],
-	});
+  const user = await UserModel.find({
+    $and: [{ _id: userId }],
+  });
 
-	const categoryMap = new Map();
+  const categoryMap = new Map();
 
-	user[0].personalTxs.map((item) => {
-		if (item?.category !== undefined) {
-			if (categoryMap.get(item?.category) === undefined) {
-				categoryMap.set(item?.category, { expense: 0, total: 0 });
-			}
-			categoryMap.get(item?.category).expense++;
-			if (item?.amount !== undefined) {
-				categoryMap.get(item?.category).total += parseInt(item?.amount);
-			}
-		}
-	});
+  user[0].personalTxs.map((item) => {
+    if (item?.category !== undefined) {
+      if (categoryMap.get(item?.category) === undefined) {
+        categoryMap.set(item?.category, { expense: 0, total: 0 });
+      }
+      categoryMap.get(item?.category).expense++;
+      if (item?.amount !== undefined) {
+        categoryMap.get(item?.category).total += parseInt(item?.amount);
+      }
+    }
+  });
 
-	const cateArr = new Array();
+  const cateArr = new Array();
 
-	var iterator_obj = categoryMap.entries();
-	let arr;
-	while ((arr = iterator_obj.next().value)) {
-		cateArr.push(arr);
-	}
+  var iterator_obj = categoryMap.entries();
+  let arr;
+  while ((arr = iterator_obj.next().value)) {
+    cateArr.push(arr);
+  }
 
-	let finalObj = new Array();
-	for (let index = 0; index < cateArr.length; index++) {
-		let myObj = {
-			category: cateArr[index][0],
-			expense: cateArr[index][1].expense,
-			total: cateArr[index][1].total,
-		};
-		finalObj.push(myObj);
-	}
-	res.json(finalObj);
+  let finalObj = new Array();
+  for (let index = 0; index < cateArr.length; index++) {
+    let myObj = {
+      category: cateArr[index][0],
+      expense: cateArr[index][1].expense,
+      total: cateArr[index][1].total,
+    };
+    finalObj.push(myObj);
+  }
+  res.json(finalObj);
 });
 module.exports = router;

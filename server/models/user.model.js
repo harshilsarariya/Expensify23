@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const moment = require("moment");
 
 const UserSchema = mongoose.Schema({
 	name: { type: String },
@@ -22,7 +23,6 @@ const UserSchema = mongoose.Schema({
 			}),
 		],
 	},
-	groups: [mongoose.Types.ObjectId],
 });
 
 const UserModel = mongoose.model("users", UserSchema);
