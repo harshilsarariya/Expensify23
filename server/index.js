@@ -2,6 +2,9 @@ const express = require("express");
 const app = express();
 const dotenv = require("dotenv");
 
+// database configurations
+require("./database/index");
+
 // enviorment variables configurations
 dotenv.config();
 
