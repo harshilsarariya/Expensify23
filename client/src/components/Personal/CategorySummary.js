@@ -5,6 +5,7 @@ import { PieChart } from "react-native-chart-kit";
 import moment from "moment";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { fetchCategories, getBudget } from "../../api/user";
+import { useIsFocused } from "@react-navigation/native";
 
 const CategorySummary = ({ navigation }) => {
   const [categories, setCategories] = useState([]);
@@ -13,6 +14,8 @@ const CategorySummary = ({ navigation }) => {
   const [totalExpenseOfMonth, setTotalExpenseOfMonth] = useState(0);
   const [budget, setBudget] = useState(0);
   const [budgetPercentage, setBudgetPercentage] = useState(0);
+
+  const isFocused = useIsFocused();
 
   const handleCategory = async () => {
     const data = await fetchCategories(userId);
@@ -74,6 +77,12 @@ const CategorySummary = ({ navigation }) => {
   useEffect(() => {
     handleChartData();
   }, [categories]);
+
+  useEffect(() => {
+    handleCategory();
+    handleBudget();
+    handleChartData();
+  }, [isFocused]);
 
   return (
     <View className="bg-[#2A2E39] mt-2  p-3 rounded-xl">
