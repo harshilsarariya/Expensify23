@@ -110,7 +110,7 @@ router.post("/:grpId/members/remove", async (req, res) => {
 	});
 });
 
-// add transaction
+// # add transaction
 router.post("/:grpId/tx/add", async (req, res) => {
 	const { grpId } = req.params;
 	if (!grpId) {
@@ -133,7 +133,8 @@ router.post("/:grpId/tx/add", async (req, res) => {
 					txDate: new Date(),
 				},
 			},
-		}
+		},
+		{ new: true }
 	)
 		.then((result) =>
 			res.json({
@@ -144,11 +145,59 @@ router.post("/:grpId/tx/add", async (req, res) => {
 		.catch((err) => console.log(err));
 });
 
-// remove transaction
-router.post("/:grpId/tx/remove", (req, res) => {});
+// # remove transaction
+router.post("/:grpId/tx/:txId/remove", async (req, res) => {
+	const { grpId, txId } = req.params;
 
-// edit  transaction
-router.post("/:grpId/tx/update", (req, res) => {});
+	if (!grpId)
+		return res.json({ success: false, msg: "Group id cannot  be empty" });
+	if (!txId) return res.json({ success: false, msg: "Tx id cannot  be empty" });
+
+	GroupModel.findOneAndUpdate(
+		{ _id: grpId, "txs._id": txId },
+		{
+			"txs.$": null,
+		},
+		{ new: true }
+	)
+		.then((result) =>
+			res.json({
+				success: true,
+				data: result,
+			})
+		)
+		.catch((err) => console.log(err));
+});
+
+// # edit the transaction
+router.post("/:grpId/tx/:txId/update", (req, res) => {
+	const { grpId, txId } = req.params;
+	const { paidBy, amount, category, description, lent, withUsers, txDate } =
+		req.body;
+	if (!grpId)
+		return res.json({ success: false, msg: "Group Id cannot  be  empty!" });
+	GroupModel.findOneAndUpdate(
+		{ _id: grpId, "txs._id": txId },
+		{
+			"txs.$": {
+				paidBy,
+				amount,
+				category,
+				description,
+				lent,
+				withUsers,
+				txDate: new Date(),
+			},
+		},
+		{ new: true }
+	)
+		.then((result) => {
+			return res.json({ success: true, data: result });
+		})
+		.catch((err) => {
+			console.log(err);
+		});
+});
 
 // settle transaction
 router.post("/:grpId/tx/settle", (req, res) => {});
