@@ -4,9 +4,22 @@ import { AntDesign } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { TouchableWithoutFeedback, TouchableOpacity } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
+import { getAllGrp } from "../../api/group";
+import { useEffect, useState } from "react";
 
 const GroupList = () => {
   const navigator = useNavigation();
+  const [grpData, setGrpData] = useState([]);
+
+  const handleGrpInfo = async () => {
+    const data = await getAllGrp();
+    setGrpData(data);
+  };
+
+  useEffect(() => {
+    handleGrpInfo();
+  }, []);
+
   return (
     <>
       <View className="flex flex-row justify-between my-4">
@@ -21,13 +34,13 @@ const GroupList = () => {
       </View>
       <ScrollView>
         <View className="flex space-y-4 mb-4">
-          {[...Array(10)].map((val, idx) => {
+          {grpData.map((item, idx) => {
             return (
               <TouchableOpacity
-                onPress={() => navigator.navigate("GroupChat")}
+                onPress={() => navigator.navigate("GroupChat", { item })}
                 key={idx}
               >
-                <GroupCard />
+                <GroupCard item={item} />
               </TouchableOpacity>
             );
           })}
@@ -37,21 +50,22 @@ const GroupList = () => {
   );
 };
 
-const GroupCard = () => {
-    const name = "Hostel Boys";
-    return(
-        <>
-            <View className="flex flex-row justify-between items-center p-2">
-                <View className="bg-gray-100 flex rounded-full">
-                    {/* <Image className="h-16 w-16 rounded-full" source={require("../../assets/images/avatar2.png")} /> */}
-                    <Text className="text-3xl font-bold px-4 py-2 text-center text-blue-900">{name.charAt(0)}</Text>
-                </View>
-                <View className="basis-3/4">
-                    <Text className="text-white text-lg font-medium">Hostel Boys</Text>
-                </View>
-            </View>
-        </>
-    )
-}
+const GroupCard = ({ item }) => {
+  return (
+    <>
+      <View className="flex flex-row justify-between items-center p-2">
+        <View className="bg-gray-100 flex rounded-full">
+          {/* <Image className="h-16 w-16 rounded-full" source={require("../../assets/images/avatar2.png")} /> */}
+          <Text className="text-3xl font-bold px-4 py-2 text-center text-blue-900">
+            {item.name[0]}
+          </Text>
+        </View>
+        <View className="basis-3/4">
+          <Text className="text-white text-lg font-medium">{item.name}</Text>
+        </View>
+      </View>
+    </>
+  );
+};
 
 export default GroupList;
