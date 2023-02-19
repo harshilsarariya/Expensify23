@@ -199,6 +199,13 @@ router.post("/:grpId/tx/:txId/update", (req, res) => {
 		});
 });
 
+// # get all groups
+router.get("/all", (req, res) => {
+	GroupModel.find({}).then((result) => {
+		return res.json({ success: true, data: result });
+	});
+});
+
 // settle transaction
 router.post("/:grpId/tx/settle", (req, res) => {});
 
