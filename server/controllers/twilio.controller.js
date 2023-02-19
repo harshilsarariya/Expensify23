@@ -34,7 +34,7 @@ exports.verifyOTP = async (req, res) => {
 		res.status(200).json({ verificationResponse });
 	} catch (error) {
 		res
-			.status(error?.status || 300)
+			.status(error?.status || 400)
 			.send(error?.message || "Something went wrong!");
 	}
 };
