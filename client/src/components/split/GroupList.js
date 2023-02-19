@@ -32,11 +32,13 @@ const GroupList = () => {
 }
 
 const GroupCard = () => {
+    const name = "Hostel Boys";
     return(
         <>
             <View className="flex flex-row justify-between items-center p-2">
-                <View className="basis-1/4">
-                    <Image className="h-16 w-16 rounded-full" source={require("../../assets/images/avatar2.png")} />
+                <View className="bg-gray-100 flex rounded-full">
+                    {/* <Image className="h-16 w-16 rounded-full" source={require("../../assets/images/avatar2.png")} /> */}
+                    <Text className="text-3xl font-bold px-4 py-2 text-center text-blue-900">{name.charAt(0)}</Text>
                 </View>
                 <View className="basis-3/4">
                     <Text className="text-white text-lg font-medium">Hostel Boys</Text>
