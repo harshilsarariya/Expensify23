@@ -8,6 +8,7 @@ import NewGroup from "../screens/Split/NewGroup";
 import GroupChat from "../screens/Split/GroupChat";
 // import Navbar from "../components/personal/Navbar";
 import TransDetails from "../components/split/ChatDetails";
+import SettlePayment from "../components/split/SettlePayment";
 
 const Stack = createStackNavigator();
 
@@ -51,6 +52,13 @@ const SplitNavigation = ({ navigation }) => {
       <Stack.Screen name="TransDetails">
         {(props) => 
           <TransDetails
+            navigation={navigation}
+          />
+        }
+      </Stack.Screen>
+      <Stack.Screen name="PaySettle">
+        {(props) => 
+          <SettlePayment
             navigation={navigation}
           />
         }

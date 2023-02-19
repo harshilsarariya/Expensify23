@@ -34,7 +34,7 @@ const Balance = () => {
                                                 <Text className="text-emerald-400 text-lg"><FontAwesome name="rupee" size={20} color="#34d399" /> 55.4</Text>
                                             </View>
                                         </View>
-                                            <View className="bg-slate-700 basis-1/5 py-2 rounded-xl"><Text className="text-center text-white">Settle</Text></View>
+                                            <TouchableOpacity className="bg-slate-700 basis-1/5 py-2 rounded-xl"><Text className="text-center text-white">Settle</Text></TouchableOpacity>
                                         </View>
                                     </>
                                 )
