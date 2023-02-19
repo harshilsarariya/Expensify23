@@ -37,7 +37,7 @@ router.put("/update", (req, res) => {
 });
 
 // update budget only
-router.put("/updateBudget/:id", async (req, res) => {
+router.put("/updatebudget/:id", async (req, res) => {
   const { id } = req.params;
   const { budget } = req.body;
 
