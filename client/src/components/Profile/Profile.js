@@ -2,13 +2,14 @@ import { View, Text, TouchableOpacity } from "react-native";
 import React, { useEffect, useState } from "react";
 import GeneralNavbar from "../GeneralNavbar";
 import { FontAwesome, SimpleLineIcons, AntDesign } from "@expo/vector-icons";
-import { useNavigation } from "@react-navigation/native";
+import { useIsFocused, useNavigation } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const Profile = () => {
+const Profile = ({ setTabShown }) => {
   const navigation = useNavigation();
   const [name, setName] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
+  const isFocused = useIsFocused();
 
   const handleName = async () => {
     setName(await AsyncStorage.getItem("name"));
@@ -18,6 +19,10 @@ const Profile = () => {
   useEffect(() => {
     handleName();
   }, []);
+
+  useEffect(() => {
+    setTabShown(false);
+  }, [isFocused]);
 
   return (
     <View>

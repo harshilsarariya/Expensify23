@@ -9,20 +9,19 @@ import UpdateProfile from "../components/Profile/UpdateProfile";
 const Stack = createStackNavigator();
 
 const ProfileNavigation = ({ setTabShown }) => {
-  const isFocused = useIsFocused();
-
-  useEffect(() => {
-    setTabShown(false);
-  }, [isFocused]);
 
   return (
     <Stack.Navigator
       initialRouteName="Profile"
       screenOptions={{ headerShown: false }}
     >
-      <Stack.Screen name="Profile">{(props) => <Profile/>}</Stack.Screen>
+      <Stack.Screen name="Profile">
+        {(props) => <Profile setTabShown={setTabShown} />}
+      </Stack.Screen>
       <Stack.Screen name="Settings">{(props) => <Setting />}</Stack.Screen>
-      <Stack.Screen name="UpdateProfile">{(props) => <UpdateProfile/>}</Stack.Screen>
+      <Stack.Screen name="UpdateProfile">
+        {(props) => <UpdateProfile />}
+      </Stack.Screen>
       <Stack.Screen name="BudgetCycle">
         {(props) => <BudgetCycle />}
       </Stack.Screen>

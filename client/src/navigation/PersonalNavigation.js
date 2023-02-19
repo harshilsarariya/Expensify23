@@ -17,6 +17,10 @@ const PersonalNavigation = ({ setTabShown, navigation }) => {
     setTabShown(true);
   }, [isFocused]);
 
+  useEffect(() => {
+    setTabShown(true);
+  }, []);
+
   return (
     <>
       <StatusBar backgroundColor="#1E2128" barStyle="" />
