@@ -9,7 +9,6 @@ import moment from "moment";
 const TransDetails = () => {
   const route = useRoute();
   const { item } = route.params;
-  console.log("item in det ", item);
 
   return (
     <>

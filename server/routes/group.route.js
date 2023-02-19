@@ -204,34 +204,34 @@ router.get("/get/all", (req, res) => {
 });
 
 // settle transaction
-router.post("/:grpId/tx/settle/:ofUser/:withUser", async (req, res) => {
-	const { grpId, ofUser, withUser } = req.params;
-	console.log("g, o, w", grpId, ofUser, withUser);
-	const allTxs = await GroupModel.findOne({ _id: grpId }).select("txs");
-	let total = 0;
-	if (allTxs) {
-		allTxs.txs.forEach((txItem) => {
-			if (txItem.paidBy == ofUser) {
-				txItem.withUsers.forEach((wu) => {
-					if (wu.userId == withUser) {
-						total += wu.owe;
-					}
-				});
-			} else if (txItem.paidBy == withUser) {
-				txItem.withUsers.forEach((wu) => {
-					if (wu.userId == ofUser) {
-						total -= wu.owe;
-					}
-				});
-			}
-		});
-	}
+router.get("/:grpId/tx/settle/:ofUser/:withUser", async (req, res) => {
+  const { grpId, ofUser, withUser } = req.params;
+  const allTxs = await GroupModel.findOne({ _id: grpId }).select("txs");
+  let total = 0;
+  if (allTxs) {
+    allTxs.txs.forEach((txItem) => {
+      if (txItem.paidBy == ofUser) {
+        txItem.withUsers.forEach((wu) => {
+          if (wu.userId == withUser) {
+            total += wu.owe;
+          }
+        });
+      } else if (txItem.paidBy == withUser) {
+        txItem.withUsers.forEach((wu) => {
+          if (wu.userId == ofUser) {
+            total -= wu.owe;
+          }
+        });
+      }
+    });
+  }
 
-	return res.json({
-		succes: true,
-		data: total,
-		linkToPay: `upi://pay?pa=harshilprajapati9192@okicici&am=${abs(total)}`,
-	});
+  return res.json({
+    succes: true,
+    data: total,
+    // linkToPay: `upi://pay?pa=9510142642@paytm&am=${total}`,
+    linkToPay: `upi://pay?pa=tejendradhanani@okicici&am=${total}`,
+  });
 });
 
 module.exports = router;

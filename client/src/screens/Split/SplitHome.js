@@ -12,7 +12,7 @@ const SplitHome = ({ navigation }) => {
     <>
       <GeneralNavbar title={"Split Expense"} navigationPath={"Personal"} />
       <View className="p-4 mb-24">
-        <Balance />
+        {/* <Balance /> */}
         <GroupList />
       </View>
     </>

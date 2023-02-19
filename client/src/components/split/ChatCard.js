@@ -18,12 +18,10 @@ const ChatCard = ({ item }) => {
 
   let letUserMe;
   item?.withUsers.forEach((wu) => {
-    console.log(wu);
     if (wu.userId === userId) {
       letUserMe = wu;
     }
   });
-  console.log("letmeuse", letUserMe);
 
   useEffect(() => {
     handleUserId();
