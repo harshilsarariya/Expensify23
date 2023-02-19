@@ -11,7 +11,13 @@ const PersonalScreen = ({ navigation, setTabShown }) => {
 
   useEffect(() => {
     setTabShown(true);
+
+    console.log("Prsonal Screen ");
   }, [isFocused]);
+
+  useEffect(() => {
+    setTabShown(true);
+  }, []);
 
   return (
     <View className="mx-3 ">

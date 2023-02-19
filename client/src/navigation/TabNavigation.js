@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text, TouchableOpacity } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { useNavigation } from "@react-navigation/native";
@@ -13,6 +13,10 @@ const Tab = createBottomTabNavigator();
 const TabNavigation = () => {
   const navigation = useNavigation();
   const [tabShown, setTabShown] = useState(true);
+
+  useEffect(() => {
+    console.log(tabShown);
+  }, [tabShown]);
 
   return (
     <>

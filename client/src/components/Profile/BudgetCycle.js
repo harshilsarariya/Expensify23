@@ -70,7 +70,7 @@ const BudgetCycle = () => {
             />
           </View>
           <TouchableOpacity
-            className="bg-[#5F68D1] w-screen p-2 absolute bottom-10 items-center rounded-md"
+            className="bg-[#5F68D1] w-screen p-2 absolute bottom-28 items-center rounded-md"
             onPress={handleBudget}
           >
             <Text className="text-white tracking-widest text-base">
