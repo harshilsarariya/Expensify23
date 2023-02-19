@@ -1,7 +1,7 @@
 import { Image, Text } from "react-native";
 import { View } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
-import { useNavigation } from "@react-navigation/native";
+import { useIsFocused, useNavigation } from "@react-navigation/native";
 import { TouchableWithoutFeedback, TouchableOpacity } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { getAllGrp } from "../../api/group";
@@ -10,6 +10,7 @@ import { useEffect, useState } from "react";
 const GroupList = () => {
   const navigator = useNavigation();
   const [grpData, setGrpData] = useState([]);
+  const isFocus = useIsFocused();
 
   const handleGrpInfo = async () => {
     const data = await getAllGrp();
@@ -19,6 +20,10 @@ const GroupList = () => {
   useEffect(() => {
     handleGrpInfo();
   }, []);
+
+  useEffect(() => {
+    handleGrpInfo();
+  }, [isFocus]);
 
   return (
     <>
@@ -32,7 +37,7 @@ const GroupList = () => {
           </Text>
         </TouchableWithoutFeedback>
       </View>
-      <ScrollView>
+      <ScrollView className="mb-48" showsVerticalScrollIndicator={false}>
         <View className="flex space-y-4 mb-4">
           {grpData.map((item, idx) => {
             return (

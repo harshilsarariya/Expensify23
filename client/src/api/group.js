@@ -1,8 +1,8 @@
 import client from "./client";
 
-export const createGroup = async () => {
+export const createGroup = async (object, config) => {
   try {
-    const { data } = await client.post(`/grp/add`);
+    const { data } = await client.post(`/grp/add`, object, config);
     return data.data;
   } catch (error) {
     const { response } = error;

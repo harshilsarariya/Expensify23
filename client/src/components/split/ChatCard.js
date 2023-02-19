@@ -16,6 +16,15 @@ const ChatCard = ({ item }) => {
     setUserId(await AsyncStorage.getItem("userId"));
   };
 
+  let letUserMe;
+  item?.withUsers.forEach((wu) => {
+    console.log(wu);
+    if (wu.userId === userId) {
+      letUserMe = wu;
+    }
+  });
+  console.log("letmeuse", letUserMe);
+
   useEffect(() => {
     handleUserId();
   }, []);
@@ -23,7 +32,7 @@ const ChatCard = ({ item }) => {
   return (
     <>
       <TouchableOpacity
-        onPress={() => navigation.navigate("TransDetails")}
+        onPress={() => navigation.navigate("TransDetails", { item })}
         className={`rounded-2xl overflow-hidden w-60 bg-[#2A2E39] ${
           item?.paidBy === userId ? "self-end" : "self-start"
         }`}
@@ -34,11 +43,13 @@ const ChatCard = ({ item }) => {
           </Text>
         </View>
         <View className="flex flex-col">
-          {item?.paidBy === userId ? (
+          {/* item?.paidBy === userId */}
+          {!letUserMe ? (
             <>
               <View className="h-24 flex items-center justify-center ">
                 <Text className="text-[#b9fda4] text-3xl">
-                  <FontAwesome name="rupee" size={28} color="#b9fda4" /> 50
+                  <FontAwesome name="rupee" size={28} color="#b9fda4" />{" "}
+                  {item.lent}
                 </Text>
               </View>
               <View className="bg-[#2E3442] p-4">
@@ -52,13 +63,14 @@ const ChatCard = ({ item }) => {
             <>
               <View className="h-24 justify-center flex items-center">
                 <Text className="text-rose-300 text-3xl">
-                  <FontAwesome name="rupee" size={28} color="#fda4af" /> 50
+                  <FontAwesome name="rupee" size={28} color="#fda4af" />{" "}
+                  {letUserMe.owe}
                 </Text>
               </View>
               <View className="bg-[#2E3442] p-4">
                 <Text className="text-center text-white">You'll pay for</Text>
                 <Text className="text-center text-white">
-                  Jay Maharaj Lunch
+                  {item.description}
                 </Text>
               </View>
             </>

@@ -5,10 +5,9 @@ const router = require("express").Router();
 
 // # create group
 router.post("/add", async (req, res) => {
-  const { name, description, members } = req.body;
+  const { name, members } = req.body;
   const newGroup = new GroupModel({
     name,
-    description,
     members,
   });
 
@@ -18,8 +17,6 @@ router.post("/add", async (req, res) => {
 
   const grpId = createdGrp._id;
   const grpMembers = createdGrp.members;
-  console.log("grpId", grpId);
-  console.log("grpM", grpMembers);
 
   await grpMembers.forEach(async (grpMemId) => {
     await UserModel.findOneAndUpdate(

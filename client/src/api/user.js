@@ -41,6 +41,19 @@ export const createUser = async (object, config) => {
   }
 };
 
+export const getUsers = async () => {
+  try {
+    const { data } = await client.get(`/user/get/all`);
+    return data.data;
+  } catch (error) {
+    const { response } = error;
+    if (response?.data) {
+      return response.data;
+    }
+    return { error: error.message || error };
+  }
+};
+
 export const addTransaction = async (object, config) => {
   try {
     const { data } = await client.put(`/user/tx/add`, object, config);
