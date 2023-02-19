@@ -145,7 +145,7 @@ router.post("/:grpId/tx/add", async (req, res) => {
 		.catch((err) => console.log(err));
 });
 
-// remove transaction
+// # remove transaction
 router.post("/:grpId/tx/:txId/remove", async (req, res) => {
 	const { grpId, txId } = req.params;
 
@@ -156,9 +156,7 @@ router.post("/:grpId/tx/:txId/remove", async (req, res) => {
 	GroupModel.findOneAndUpdate(
 		{ _id: grpId, "txs._id": txId },
 		{
-			$pull: {
-				txs: {},
-			},
+			"txs.$": null,
 		},
 		{ new: true }
 	)
