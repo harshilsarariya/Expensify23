@@ -200,13 +200,41 @@ router.post("/:grpId/tx/:txId/update", (req, res) => {
 });
 
 // # get all groups
-router.get("/all", (req, res) => {
+router.get("/get/all", (req, res) => {
 	GroupModel.find({}).then((result) => {
 		return res.json({ success: true, data: result });
 	});
 });
 
 // settle transaction
-router.post("/:grpId/tx/settle", (req, res) => {});
+router.post("/:grpId/tx/settle/:ofUser/:withUser", async (req, res) => {
+	const { grpId, ofUser, withUser } = req.params;
+	console.log("g, o, w", grpId, ofUser, withUser);
+	const allTxs = await GroupModel.findOne({ _id: grpId }).select("txs");
+	let total = 0;
+	if (allTxs) {
+		allTxs.txs.forEach((txItem) => {
+			if (txItem.paidBy == ofUser) {
+				txItem.withUsers.forEach((wu) => {
+					if (wu.userId == withUser) {
+						total += wu.owe;
+					}
+				});
+			} else if (txItem.paidBy == withUser) {
+				txItem.withUsers.forEach((wu) => {
+					if (wu.userId == ofUser) {
+						total -= wu.owe;
+					}
+				});
+			}
+		});
+	}
+
+	return res.json({
+		succes: true,
+		data: total,
+		linkToPay: `upi://pay?pa=harshilprajapati9192@okicici&am=${abs(total)}`,
+	});
+});
 
 module.exports = router;
