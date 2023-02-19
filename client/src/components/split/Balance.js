@@ -3,8 +3,10 @@ import { FontAwesome } from '@expo/vector-icons';
 import { AntDesign } from '@expo/vector-icons';
 import { useState } from "react";
 import BouncyCheckbox from "react-native-bouncy-checkbox";
+import { useNavigation } from "@react-navigation/core";
 
 const Balance = () => {
+    const navigation = useNavigation();
     const [ModalOpen,setModalOpen] = useState(false);
     return(
         <>
@@ -34,7 +36,7 @@ const Balance = () => {
                                                 <Text className="text-emerald-400 text-lg"><FontAwesome name="rupee" size={20} color="#34d399" /> 55.4</Text>
                                             </View>
                                         </View>
-                                            <TouchableOpacity className="bg-slate-700 basis-1/5 py-2 rounded-xl"><Text className="text-center text-white">Settle</Text></TouchableOpacity>
+                                            <TouchableOpacity onPress={() => {setModalOpen(false);navigation.navigate("PaySettle")}} className="bg-slate-700 basis-1/5 py-2 rounded-xl"><Text className="text-center text-white">Settle</Text></TouchableOpacity>
                                         </View>
                                     </>
                                 )
