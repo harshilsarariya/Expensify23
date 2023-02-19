@@ -224,7 +224,6 @@ router.get("/fetchCurrentMonthTransactions/:id", async (req, res) => {
 
 router.get("/fetchTodaysTransactions/:id", async (req, res) => {
   const { id } = req.params;
-
   if (!id) return res.status(401).json({ error: "Invalid Request" });
 
   const user = await UserModel.findById(id);
@@ -235,7 +234,7 @@ router.get("/fetchTodaysTransactions/:id", async (req, res) => {
 
   user.personalTxs.map((item) => {
     if (
-      item.Date !== undefined &&
+      item.txDate !== undefined &&
       moment(item?.txDate).format("MM") === currMonth &&
       moment(item?.txDate).format("DD") === currDate
     ) {
