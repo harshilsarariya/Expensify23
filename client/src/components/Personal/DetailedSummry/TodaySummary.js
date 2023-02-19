@@ -4,8 +4,8 @@ import { AntDesign } from "@expo/vector-icons";
 import * as Progress from "react-native-progress";
 import { LineChart } from "react-native-chart-kit";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-// import { fetchTodaysTransactions } from "../../../api/user";
 import Card from "../Card";
+import { fetchTodaysTransactions } from "../../../api/user";
 
 const data = {
   labels: ["1", "2", "3", "4", "5", "6"],
@@ -29,8 +29,9 @@ const TodaySummary = ({ navigation }) => {
   };
 
   const handleTransaction = async () => {
-    // const data = await fetchTodaysTransactions(userId);
-    // setTransactions(data);
+    const data = await fetchTodaysTransactions(userId);
+    console.log(data);
+    setTransactions(data);
   };
 
   useEffect(() => {
@@ -47,13 +48,13 @@ const TodaySummary = ({ navigation }) => {
 
       {/* drop down for selection of category and date */}
       <View className="flex flex-row mt-5">
-        <View className="flex flex-row bg-[#2A2E39] p-2 rounded-lg items-center mr-4">
+        {/* <View className="flex flex-row bg-[#2A2E39] p-2 rounded-lg items-center mr-4">
           <Text className="text-[#90909a]">All Expenses </Text>
-          {/* <AntDesign name="down" size={15} color="#6561CE" /> */}
-        </View>
+          <AntDesign name="down" size={15} color="#6561CE" />
+        </View> */}
         <View className="flex flex-row bg-[#2A2E39] p-2 rounded-lg items-center">
           <Text className="text-[#6561CE]">Today </Text>
-          <AntDesign name="down" size={15} color="#6561CE" />
+          {/* <AntDesign name="down" size={15} color="#6561CE" /> */}
         </View>
       </View>
 

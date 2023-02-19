@@ -8,7 +8,7 @@ const Balance = () => {
     const [ModalOpen,setModalOpen] = useState(false);
     return(
         <>
-            <View className="flex flex-row justify-between p-4 h-32 rounded-xl border border-white bg-slate-700">
+            <View className="flex flex-row justify-between p-4 h-32 rounded-xl border border-white bg-[#353c4c]">
             <Modal animationType="slide"
           transparent={false}
           visible={ModalOpen}
@@ -24,7 +24,7 @@ const Balance = () => {
                                 return(
                                     <>
                                         <View className="p-4 flex flex-row justify-between items-center">
-                                        <BouncyCheckbox className="w-10" onPress={() => setUsers({...user,username:user[idx].username})} />
+                                        <BouncyCheckbox className="w-10" onPress={() => setUsers([...users,user[idx]])} />
                                         <View className="flex flex-row basis-3/5 flex-1 space-x-4">
                                             <View>
                                                 <Image className="w-12 h-12 rounded-full" source={require("../../assets/images/avatar2.png")} />
@@ -34,13 +34,13 @@ const Balance = () => {
                                                 <Text className="text-emerald-400 text-lg"><FontAwesome name="rupee" size={20} color="#34d399" /> 55.4</Text>
                                             </View>
                                         </View>
-                                            <View className="bg-slate-700 basis-1/5 py-2 rounded-xl"><Text className="text-center text-white">Settle</Text></View>
+                                            <TouchableOpacity className="bg-slate-700 basis-1/5 py-2 rounded-xl"><Text className="text-center text-white">Settle</Text></TouchableOpacity>
                                         </View>
                                     </>
                                 )
                             })
                         }
-                        <TouchableOpacity><Text>Select All</Text></TouchableOpacity>
+                        <TouchableOpacity><Text className="text-white text-lg font-medium">Select All</Text></TouchableOpacity>
                         <View className="flex flex-row justify-between">
                             <Text className="text-white font-medium">Total</Text>
                             <Text className="text-emerald-400 text-2xl"><FontAwesome name="rupee" size={24} color="#34d399" /> 55.4</Text>
@@ -49,15 +49,15 @@ const Balance = () => {
                 </View>
             </Modal>
                 <View className="flex justify-between">
-                    <Text className="text-white">Balance with friends</Text>
-                    <Text className="text-emerald-500 text-2xl font-medium"><FontAwesome name="rupee" size={24} color="#10b981" /> 3226.12</Text>
-                    <TouchableOpacity onPress={() => setModalOpen(true)}><Text className="font-medium text-purple-400">Settle Up <AntDesign name="right" size={12} color="#c084fc" /></Text></TouchableOpacity>
+                    <Text className="text-white">Balance with Friends</Text>
+                    <Text className="text-emerald-300 text-2xl font-medium"><FontAwesome name="rupee" size={24} color="#6ee7b7" /> 3226.12</Text>
+                    <TouchableOpacity onPress={() => setModalOpen(true)}><Text className="font-medium text-indigo-500">Settle Up <AntDesign name="right" size={12} color="#6366f1" /></Text></TouchableOpacity>
                 </View>
                 <View className="flex justify-between items-end">
-                    <View className="p-2 bg-green-700 rounded-xl">
+                    <View className="p-2 bg-green-900 bg-opacity-10 rounded-xl">
                         <Text className="text-white font-medium">You'll get <FontAwesome name="rupee" size={16} color="#6ee7b7" /><Text className="text-emerald-300"> 3226.12</Text></Text>
                     </View>
-                    <View className="bg-red-700 py-1 px-2 rounded-xl font-medium"><Text className="text-white">You'll pay <FontAwesome name="rupee" size={14} color="#fda4af" /><Text className="text-rose-300"> 0</Text></Text></View>
+                    <View className="bg-red-900 bg-opacity-30 py-1 px-2 rounded-xl font-medium"><Text className="text-white">You'll pay <FontAwesome name="rupee" size={14} color="#fda4af" /><Text className="text-rose-300"> 0</Text></Text></View>
                 </View>
             </View>
         </>

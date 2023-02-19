@@ -4,7 +4,7 @@ import * as Progress from "react-native-progress";
 import { PieChart } from "react-native-chart-kit";
 import moment from "moment";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { fetchCategories } from "../../api/user";
+import { fetchCategories, getBudget } from "../../api/user";
 
 const CategorySummary = ({ navigation }) => {
   const [categories, setCategories] = useState([]);
@@ -24,21 +24,21 @@ const CategorySummary = ({ navigation }) => {
   };
 
   const handleBudget = async () => {
-    // const data = await getBudget(userId);
-    const data = { budget: 50000 };
+    const data = await getBudget(userId);
+
     setBudget(data.budget);
-    let budgetPer = (100 * 41567) / budget;
+    let budgetPer = (100 * totalExpenseOfMonth) / budget;
     setBudgetPercentage(Math.ceil(budgetPer));
   };
 
   const handleChartData = () => {
     let colorArr = [
-      "#ea6d95",
-      "#ffea00",
-      "#6f8ff9",
-      "#b04e43",
-      "#58CF6C",
-      "#7B43A1",
+      "#e9c46a",
+      "#ffbe0b",
+      "#fb5607",
+      "#ff006e",
+      "#8338ec",
+      "#3a86ff",
     ];
     let index = 0,
       totalExpense = 0;

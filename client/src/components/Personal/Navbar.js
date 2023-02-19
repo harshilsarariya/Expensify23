@@ -5,19 +5,33 @@ import { useNavigation } from "@react-navigation/native";
 import { useState } from "react";
 import { useEffect } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { getName } from "../../api/user";
 
 const Navbar = () => {
   const navigation = useNavigation();
+  const [userId, setUserId] = useState("");
   const [name, setName] = useState("User");
 
   const handleUserName = async () => {
     // API - fetch User name
-    setName(await AsyncStorage.getItem("name"));
+    const data = await getName(userId);
+    if (data?.success) {
+      setName(data.data);
+      await AsyncStorage.setItem("name", name);
+    }
+  };
+
+  const handleUserId = async () => {
+    setUserId(await AsyncStorage.getItem("userId"));
   };
 
   useEffect(() => {
-    handleUserName();
+    handleUserId();
   }, []);
+
+  useEffect(() => {
+    handleUserName();
+  }, [userId]);
 
   return (
     <View className="my-2">
