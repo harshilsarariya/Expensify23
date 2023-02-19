@@ -27,6 +27,7 @@ const AddExpense = ({ setTabShown, navigation }) => {
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState("General");
   const [userId, setUserId] = useState("");
+  const [active, setActive] = useState("");
 
   const isFocused = useIsFocused();
   const handleExpense = async () => {
@@ -90,45 +91,83 @@ const AddExpense = ({ setTabShown, navigation }) => {
           </View>
           <View className="flex flex-row space-x-5 mt-4">
             <TouchableOpacity
-              onPress={() => setCategory("Food")}
+              onPress={() => {
+                setActive("Food");
+                setCategory("Food");
+              }}
               className="bg-[#2A2D3C] p-2 w-8 h-8 rounded-full items-center"
             >
-              <FontAwesome5 name="pizza-slice" size={15} color="#aaaaaa" />
+              <FontAwesome5
+                name="pizza-slice"
+                size={15}
+                color={active === "Food" ? "#ec8b8b" : "#aaaaaa"}
+              />
             </TouchableOpacity>
 
             <TouchableOpacity
-              onPress={() => setCategory("Grocery")}
+              onPress={() => {
+                setActive("Grocery");
+                setCategory("Grocery");
+              }}
               className="bg-[#2A2D3C] p-2 rounded-full w-8 h-8"
             >
-              <FontAwesome5 name="shopping-cart" size={16} color="#aaaaaa" />
+              <FontAwesome5
+                name="shopping-cart"
+                size={16}
+                color={active === "Grocery" ? "#bc8eb9" : "#aaaaaa"}
+              />
             </TouchableOpacity>
             <TouchableOpacity
-              onPress={() => setCategory("Ticket")}
+              onPress={() => {
+                setActive("Ticket");
+                setCategory("Ticket");
+              }}
               className="bg-[#2A2D3C] p-2 rounded-full w-8 h-8"
             >
-              <Foundation name="ticket" size={17} color="#aaaaaa" />
+              <Foundation
+                name="ticket"
+                size={17}
+                color={active === "Ticket" ? "#d5ec8b" : "#aaaaaa"}
+              />
             </TouchableOpacity>
             <TouchableOpacity
-              onPress={() => setCategory("Shopping")}
+              onPress={() => {
+                setActive("Shopping");
+                setCategory("Shopping");
+              }}
               className="bg-[#2A2D3C] p-2 rounded-full w-8 h-8"
             >
-              <Fontisto name="shopping-bag-1" size={19} color="#aaaaaa" />
+              <Fontisto
+                name="shopping-bag-1"
+                size={19}
+                color={active === "Shopping" ? "#8bec9e" : "#aaaaaa"}
+              />
             </TouchableOpacity>
             <TouchableOpacity
-              onPress={() => setCategory("Bills")}
+              onPress={() => {
+                setActive("Bills");
+                setCategory("Bills");
+              }}
               className="bg-[#2A2D3C] p-2 rounded-full w-8 h-8"
             >
               <FontAwesome5
                 name="money-bill-wave-alt"
                 size={15}
-                color="#aaaaaa"
+                color={active === "Bills" ? "#ecb78b" : "#aaaaaa"}
               />
             </TouchableOpacity>
             <TouchableOpacity
-              onPress={() => setCategory("Fuel")}
+              onPress={() => {
+                setActive("Fuel");
+                setCategory("Fuel");
+              }}
               className="bg-[#2A2D3C] p-2 rounded-full w-8 h-8"
             >
-              <MaterialCommunityIcons name="fuel" size={19} color="#aaaaaa" />
+              <MaterialCommunityIcons
+                name="fuel"
+                size={19}
+                color={active === "Fuel" ? "#9b8bec" : "#aaaaaa"}
+              />
             </TouchableOpacity>
           </View>
           <View className="mt-5 flex flex-row justify-between items-center">

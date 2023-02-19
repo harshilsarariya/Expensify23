@@ -30,7 +30,6 @@ const TodaySummary = ({ navigation }) => {
 
   const handleTransaction = async () => {
     const data = await fetchTodaysTransactions(userId);
-    console.log(data);
     setTransactions(data);
   };
 

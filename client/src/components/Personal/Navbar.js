@@ -1,7 +1,7 @@
 import React from "react";
 import { View, Text, TouchableOpacity } from "react-native";
 import { SimpleLineIcons, FontAwesome } from "@expo/vector-icons";
-import { useNavigation } from "@react-navigation/native";
+import { useIsFocused, useNavigation } from "@react-navigation/native";
 import { useState } from "react";
 import { useEffect } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -28,6 +28,12 @@ const Navbar = () => {
   useEffect(() => {
     handleUserId();
   }, []);
+
+  const isFocused = useIsFocused();
+
+  useEffect(() => {
+    handleUserName();
+  }, [isFocused]);
 
   useEffect(() => {
     handleUserName();
