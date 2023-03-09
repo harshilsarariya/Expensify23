@@ -5,7 +5,7 @@ import { useIsFocused, useNavigation } from "@react-navigation/native";
 import { useState } from "react";
 import { useEffect } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { getName } from "../../api/user";
+import { getUserInfo } from "../../api/user";
 
 const Navbar = () => {
   const navigation = useNavigation();
@@ -14,9 +14,9 @@ const Navbar = () => {
 
   const handleUserName = async () => {
     // API - fetch User name
-    const data = await getName(userId);
+    const data = await getUserInfo(userId);
     if (data?.success) {
-      setName(data.data);
+      setName(data.data.name);
       await AsyncStorage.setItem("name", name);
     }
   };

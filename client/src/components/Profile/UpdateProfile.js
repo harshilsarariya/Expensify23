@@ -1,20 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { Alert, Image, Text, View } from "react-native";
 import { TextInput, TouchableOpacity } from "react-native-gesture-handler";
-import { updateName } from "../../api/user";
+import { getUserInfo, updateUserInfo } from "../../api/user";
 import CommonNav from "../../screens/Split/CommonNav";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import GeneralNavbar from "../GeneralNavbar";
 
-const config = {
-  method: "PUT",
-  headers: {
-    "content-type": "application/json",
-  },
-};
-
 const UpdateProfile = () => {
-  const [name, setName] = useState("Harshil");
+  const [name, setName] = useState("");
+  const [upiId, setUpiId] = useState("123");
   const [userId, setUserId] = useState("");
 
   const handleUserId = async () => {
@@ -24,20 +18,36 @@ const UpdateProfile = () => {
   const handleSubmit = async () => {
     const obj = {
       name: name,
+      upiId: upiId,
       id: userId,
     };
+    const data = await updateUserInfo(obj);
+    if (data?.success) {
+      if (data.name === name || data?.upiId === upiId) {
+        Alert.alert("Data updated successfully!");
+      } else {
+        Alert.alert("Some Error occured!");
+      }
+    }
+  };
 
-    const data = await updateName(userId, obj, config);
-    if (data.data.name === name) {
-      Alert.alert("Name updated successfully!");
+  const handleInfo = async () => {
+    const data = await getUserInfo(userId);
+    setName(data?.name);
+    if (data?.upiId) {
+      setUpiId(data?.upiId);
     } else {
-      Alert.alert("Some Error occured!");
+      setUpiId("");
     }
   };
 
   useEffect(() => {
     handleUserId();
   }, []);
+
+  useEffect(() => {
+    handleInfo();
+  }, [userId]);
 
   return (
     <>
@@ -50,19 +60,33 @@ const UpdateProfile = () => {
           />
         </View>
         <View>
-          <Text className="text-white font-medium text-lg">Name</Text>
+          <Text className="text-[#C0C1C6] font-medium text-base">Name</Text>
           <TextInput
-            className="bg-white rounded-lg px-4 py-2"
+            className="bg-[#2A2E39] text-[#B3B6BF] text-base rounded-lg px-4 py-2 mt-2"
             value={name}
             onChangeText={setName}
           />
         </View>
-        <TouchableOpacity
-          onPress={handleSubmit}
-          className="bg-[#5F68D1] py-2 rounded-lg mt-4"
-        >
-          <Text className="text-center text-lg uppercase text-white">Save</Text>
-        </TouchableOpacity>
+        <View className="mt-5">
+          <Text className="text-[#C0C1C6] font-medium text-base">
+            UPI ID (Optional)
+          </Text>
+          <TextInput
+            className="bg-[#2A2E39] text-[#B3B6BF] text-base rounded-lg px-4 py-2 mt-2"
+            value={upiId}
+            onChangeText={setUpiId}
+          />
+        </View>
+        <View className="absolute bottom-20 w-full mx-auto ml-3">
+          <TouchableOpacity
+            onPress={handleSubmit}
+            className="bg-[#5F68D1] py-2 rounded-lg mt-4  "
+          >
+            <Text className="text-center text-lg uppercase text-white">
+              Save
+            </Text>
+          </TouchableOpacity>
+        </View>
       </View>
     </>
   );
