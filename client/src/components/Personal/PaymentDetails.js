@@ -1,8 +1,8 @@
 import { View, Text } from "react-native";
-import React from "react";
+import React, { useEffect } from "react";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { useRoute } from "@react-navigation/native";
-
+import moment from "moment";
 const PaymentDetails = ({ navigation }) => {
   const route = useRoute();
   const { item } = route.params;
@@ -44,12 +44,14 @@ const PaymentDetails = ({ navigation }) => {
           <Text className="text-white font-bold text-base">Rent Details</Text>
 
           <View className="flex flex-row justify-between mt-2">
-            <Text className="text-[#C0BFC0]">Total Amount</Text>
-            <Text className="text-[#e4e3ea]">₹ {item.amount}</Text>
+            <Text className="text-[#C0BFC0]">Date</Text>
+            <Text className="text-[#e4e3ea]">
+              {moment(item.txDate).format("DD-MM-YYYY")}
+            </Text>
           </View>
           <View className="flex flex-row justify-between mt-2">
-            <Text className="text-[#C0BFC0]">Owner's Name</Text>
-            <Text className="text-[#e4e3ea]">{item.from}</Text>
+            <Text className="text-[#C0BFC0]">Total Amount</Text>
+            <Text className="text-[#e4e3ea]">₹ {item.amount}</Text>
           </View>
           <View className="flex flex-row justify-between mt-2">
             <Text className="text-[#C0BFC0]">Owner's Mobile No</Text>
