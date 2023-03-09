@@ -43,7 +43,6 @@ const AddExpense = ({ setTabShown, navigation }) => {
     };
 
     const data = await addTransaction(obj, config);
-    console.log(data);
     if (data.success) {
       navigation.goBack(null);
     }
@@ -170,7 +169,7 @@ const AddExpense = ({ setTabShown, navigation }) => {
               />
             </TouchableOpacity>
           </View>
-          <View className="mt-5 flex flex-row justify-between items-center">
+          {/* <View className="mt-5 flex flex-row justify-between items-center">
             <Text className="text-[#CFD0D6]">
               Are you splitting this expense?
             </Text>
@@ -181,8 +180,8 @@ const AddExpense = ({ setTabShown, navigation }) => {
               onValueChange={toggleSwitch}
               value={isEnabled}
             />
-          </View>
-          <View className="items-center top-[380] ">
+          </View> */}
+          <View className="items-center top-[420] ">
             <TouchableOpacity
               className="bg-[#5F68D1] w-full p-2 mt-2 items-center rounded-md"
               onPress={handleExpense}
