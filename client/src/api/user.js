@@ -125,10 +125,11 @@ export const fetchCurrentMonthTransactions = async (userId) => {
   }
 };
 
-export const fetchTodaysTransactions = async (userId) => {
+export const fetchTodaysTransactions = async (userId, obj) => {
   try {
-    const { data } = await client.get(
-      `/user/fetchTodaysTransactions/${userId}`
+    const { data } = await client.post(
+      `/user/fetchTodaysTransactions/${userId}`,
+      obj
     );
     return data;
   } catch (error) {
@@ -158,9 +159,9 @@ export const updateBudget = async (userId, object, config) => {
   }
 };
 
-export const updateName = async (userId, object, config) => {
+export const updateUserInfo = async (object) => {
   try {
-    const { data } = await client.put(`/user/update`, object, config);
+    const { data } = await client.put(`/user/update`, object);
     return data;
   } catch (error) {
     const { response } = error;
@@ -184,9 +185,9 @@ export const getBudget = async (userId) => {
   }
 };
 
-export const getName = async (userId) => {
+export const getUserInfo = async (userId) => {
   try {
-    const { data } = await client.get(`/user/getName/${userId}`);
+    const { data } = await client.get(`/user/getUserInfo/${userId}`);
     return data;
   } catch (error) {
     const { response } = error;
