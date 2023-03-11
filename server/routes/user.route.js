@@ -320,10 +320,13 @@ router.get("/:userId/catwise", async (req, res) => {
 
 //  fetch  all users
 
-router.get("/get/all", (req, res) => {
-  UserModel.find({}).then((result) => {
-    return res.json({ success: true, data: result });
+router.get("/get/all", async (req, res) => {
+  const users = await UserModel.find({});
+  let data = new Array();
+  users.map((item) => {
+    data.push({ id: item._id, name: item.name, phoneNumber: item.phoneNumber });
   });
+  return res.json({ data });
 });
 
 module.exports = router;
