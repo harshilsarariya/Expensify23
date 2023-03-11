@@ -25,8 +25,8 @@ const TransDetails = () => {
           Created by You on {moment(item.txDate).format("DD-MM-YYYY")}
         </Text>
         <View className="flex flex-row space-x-2 mt-4">
-          <View className="px-4 py-2 bg-[#2A2E39] rounded-full">
-            <Text className="text-xs text-white">{item.category}</Text>
+          <View className="px-4 py-2  bg-[#2E3442] rounded-full">
+            <Text className="text-sm text-white">{item.category}</Text>
           </View>
         </View>
         <View className="mt-4">
@@ -40,11 +40,11 @@ const TransDetails = () => {
                   source={require("../../assets/images/avatar2.png")}
                 />
               </View>
-              <Text className="text-white basis-3/5">
+              <Text className="text-white text-sm basis-3/5">
                 {item.paidBy.substr(15)}
               </Text>
-              <Text className="text-white basis-1/5">
-                <FontAwesome name="rupee" size={16} color="white" />{" "}
+              <Text className="text-white basis-1/5 items-center">
+                <FontAwesome name="rupee" size={13} color="white" />{" "}
                 {item.amount}
               </Text>
             </View>
@@ -61,11 +61,11 @@ const TransDetails = () => {
                         source={require("../../assets/images/avatar2.png")}
                       />
                     </View>
-                    <Text className="text-white basis-3/5">
+                    <Text className="text-white text-sm basis-3/5">
                       {wu.userId.substr(15)}
                     </Text>
                     <Text className="text-white basis-1/5">
-                      <FontAwesome name="rupee" size={16} color="white" />{" "}
+                      <FontAwesome name="rupee" size={13} color="white" />{" "}
                       {wu.owe}
                     </Text>
                   </View>
