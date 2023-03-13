@@ -5,7 +5,7 @@ import { TouchableOpacity } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import moment from "moment";
-import { useEffect, useId, useState } from "react";
+import { useEffect, useState } from "react";
 
 const ChatCard = ({ item }) => {
   const navigation = useNavigation();
@@ -53,7 +53,7 @@ const ChatCard = ({ item }) => {
               <View className="bg-[#2E3442] p-4">
                 <Text className="text-center text-white">You'll get for</Text>
                 <Text className="text-center text-white">
-                  Jay Maharaj Lunch
+                  {item.description}
                 </Text>
               </View>
             </>

@@ -14,7 +14,6 @@ router.post("/add", async (req, res) => {
   const createdGrp = await newGroup.save();
 
   // add group id to all users
-
   const grpId = createdGrp._id;
   const grpMembers = createdGrp.members;
 
@@ -75,7 +74,7 @@ router.post("/:grpId/members/add", async (req, res) => {
 });
 
 // # remove member
-router.post("/:grpId/members/remove", async (req, res) => {
+router.put("/:grpId/members/remove", async (req, res) => {
   const { grpId } = req.params;
   if (!grpId) {
     return res.json({ success: false, msg: "Group id  cannot be  empty!" });
@@ -105,6 +104,17 @@ router.post("/:grpId/members/remove", async (req, res) => {
     success: true,
     data: updatedGrp,
   });
+});
+
+router.delete("/deleteGrp/:grpId", async (req, res) => {
+  const { grpId } = req.params;
+  if (!grpId) {
+    return res.json({ success: false, msg: "Group id  cannot be  empty!" });
+  }
+
+  const grp = await GroupModel.findByIdAndDelete(grpId);
+
+  res.json({ success: true, grp });
 });
 
 // # add transaction
@@ -207,6 +217,7 @@ router.get("/get/all", (req, res) => {
 router.get("/:grpId/tx/settle/:ofUser/:withUser", async (req, res) => {
   const { grpId, ofUser, withUser } = req.params;
   const allTxs = await GroupModel.findOne({ _id: grpId }).select("txs");
+
   let total = 0;
   if (allTxs) {
     allTxs.txs.forEach((txItem) => {
@@ -226,11 +237,35 @@ router.get("/:grpId/tx/settle/:ofUser/:withUser", async (req, res) => {
     });
   }
 
+  const { upiId } = await UserModel.findOne({ _id: ofUser }).select("upiId");
   return res.json({
     succes: true,
     data: total,
-    // linkToPay: `upi://pay?pa=9510142642@paytm&am=${total}`,
-    linkToPay: `upi://pay?pa=tejendradhanani@okicici&am=${total}`,
+    linkToPay: `upi://pay?pa=${upiId}&am=${total}`,
+  });
+});
+
+// # settle expenses
+router.put("/:grpId/tx/settle/:ofUser/:withUser", async (req, res) => {
+  const { grpId, ofUser, withUser } = req.params;
+
+  const allTxs = await GroupModel.findOne({ _id: grpId }).select("txs");
+  if (allTxs) {
+    allTxs.txs.forEach(async (txItem) => {
+      if (txItem.paidBy == ofUser) {
+        await txItem.withUsers.forEach(async (wu) => {
+          if (wu.userId == withUser) {
+            await txItem.settledBy.push(withUser);
+          }
+        });
+      }
+    });
+  }
+  await allTxs.save();
+
+  return res.json({
+    succes: true,
+    msg: "Updated Succesfully",
   });
 });
 

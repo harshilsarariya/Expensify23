@@ -5,6 +5,7 @@ import { Image } from "react-native";
 import GeneralNavbar from "../GeneralNavbar";
 import { useRoute } from "@react-navigation/native";
 import moment from "moment";
+import { useEffect } from "react";
 
 const TransDetails = () => {
   const route = useRoute();
@@ -53,23 +54,24 @@ const TransDetails = () => {
             </Text>
             {item?.withUsers.map((wu, idx) => {
               return (
-                <>
-                  <View className="p-4 flex flex-row justify-between items-center">
-                    <View className="basis-1/5">
-                      <Image
-                        className="h-10 w-10 rounded-full"
-                        source={require("../../assets/images/avatar2.png")}
-                      />
-                    </View>
-                    <Text className="text-white text-sm basis-3/5">
-                      {wu.userId.substr(15)}
-                    </Text>
-                    <Text className="text-white basis-1/5">
-                      <FontAwesome name="rupee" size={13} color="white" />{" "}
-                      {wu.owe}
-                    </Text>
+                <View
+                  className="p-4 flex flex-row justify-between items-center"
+                  key={idx}
+                >
+                  <View className="basis-1/5">
+                    <Image
+                      className="h-10 w-10 rounded-full"
+                      source={require("../../assets/images/avatar2.png")}
+                    />
                   </View>
-                </>
+                  <Text className="text-white text-sm basis-3/5">
+                    {wu.userId.substr(15)}
+                  </Text>
+                  <Text className="text-white basis-1/5">
+                    <FontAwesome name="rupee" size={13} color="white" />{" "}
+                    {wu.owe}
+                  </Text>
+                </View>
               );
             })}
           </View>

@@ -42,7 +42,9 @@ const GroupList = () => {
           {grpData.map((item, idx) => {
             return (
               <TouchableOpacity
-                onPress={() => navigator.navigate("GroupChat", { item })}
+                onPress={() => {
+                  navigator.navigate("GroupChat", { item });
+                }}
                 key={idx}
               >
                 <GroupCard item={item} />
