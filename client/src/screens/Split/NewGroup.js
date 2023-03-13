@@ -1,20 +1,13 @@
-import { ScrollView, TextInput, View } from "react-native";
+import { Alert, ScrollView, TextInput, View } from "react-native";
 import { Text, TouchableOpacity } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
-import { Modal, ImageBackground } from "react-native";
+import { Modal } from "react-native";
 import { useEffect, useState } from "react";
 import BouncyCheckbox from "react-native-bouncy-checkbox";
 import GeneralNavbar from "../../components/GeneralNavbar";
-import { getUsers } from "../../api/user";
+import { getUsers, getUsersByName } from "../../api/user";
 import { createGroup } from "../../api/group";
 import { useNavigation } from "@react-navigation/native";
-
-const config = {
-  method: "POST",
-  headers: {
-    "content-type": "application/json",
-  },
-};
 
 const NewGroup = () => {
   const [name, setName] = useState("A");
@@ -36,7 +29,15 @@ const NewGroup = () => {
       members: members,
     };
 
-    const data = await createGroup(obj, config);
+    const data = await createGroup(obj);
+    if (data?.success) {
+      Alert.alert(data?.msg);
+      navigation.navigate("MainSplit");
+    }
+  };
+  const handleSearch = async (query) => {
+    const data = await getUsersByName(query);
+    setUsers(data);
   };
 
   useEffect(() => {
@@ -63,6 +64,8 @@ const NewGroup = () => {
               <TextInput
                 placeholderTextColor={"#60656e"}
                 placeholder="Search groups contact or number"
+                onChangeText={(query) => handleSearch(query)}
+                className="text-white"
               />
             </View>
             <View className="mt-5">
@@ -77,7 +80,6 @@ const NewGroup = () => {
                         <BouncyCheckbox
                           onPress={() => {
                             setMembers((prev) => [...prev, item.id]);
-                            console.log(members);
                           }}
                         />
                         <Text className="text-white">{item.name}</Text>
@@ -88,9 +90,7 @@ const NewGroup = () => {
             </View>
             <TouchableOpacity
               onPress={() => {
-                handleNewGrp();
                 setModalOpen(!ModalOpen);
-                navigation.navigate("MainSplit");
               }}
               className="bg-[#615CAF] rounded-lg p-1 absolute bottom-6 left-3 w-full"
             >
@@ -125,6 +125,16 @@ const NewGroup = () => {
               </Text>
               <AntDesign name="down" size={20} color="#5F68D1" />
             </View>
+          </TouchableOpacity>
+        </View>
+        <View className="items-center top-[200]">
+          <TouchableOpacity
+            className="bg-[#5F68D1] w-full p-2 mt-2 items-center rounded-md"
+            onPress={handleNewGrp}
+          >
+            <Text className="text-white tracking-widest text-base">
+              CREATE GROUP
+            </Text>
           </TouchableOpacity>
         </View>
       </View>
