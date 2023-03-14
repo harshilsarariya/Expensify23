@@ -7,7 +7,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import moment from "moment";
 import { useEffect, useState } from "react";
 
-const ChatCard = ({ item }) => {
+const ChatCard = ({ item, grpId }) => {
   const navigation = useNavigation();
   const [userId, setUserId] = useState("");
 
@@ -29,8 +29,8 @@ const ChatCard = ({ item }) => {
   return (
     <>
       <TouchableOpacity
-        onPress={() => navigation.navigate("TransDetails", { item })}
-        className={`rounded-2xl overflow-hidden w-60 bg-[#2A2E39] ${
+        onPress={() => navigation.navigate("TransDetails", { item, grpId })}
+        className={`rounded-2xl overflow-hidden w-52 bg-[#2A2E39] ${
           item?.paidBy === userId ? "self-end" : "self-start"
         }`}
         activeOpacity={0.8}
@@ -41,27 +41,26 @@ const ChatCard = ({ item }) => {
           </Text>
         </View>
         <View className="flex flex-col">
-          {/* item?.paidBy === userId */}
           {!letUserMe ? (
             <>
-              <View className="h-20 flex items-center justify-center ">
-                <Text className="text-[#b9fda4] text-3xl">
-                  <FontAwesome name="rupee" size={28} color="#b9fda4" />{" "}
-                  {item.lent}
+              <View className="h-10 flex items-center justify-center ">
+                <Text className="text-[#b9fda4] text-2xl">
+                  <FontAwesome name="rupee" size={20} color="#b9fda4" />{" "}
+                  {item?.lent}
                 </Text>
               </View>
               <View className="bg-[#2E3442] p-4">
                 <Text className="text-center text-white">You'll get for</Text>
                 <Text className="text-center text-white">
-                  {item.description}
+                  {item?.description}
                 </Text>
               </View>
             </>
           ) : (
             <>
-              <View className="h-20 justify-center flex items-center">
-                <Text className="text-rose-300 text-3xl">
-                  <FontAwesome name="rupee" size={28} color="#fda4af" />{" "}
+              <View className="h-10 justify-center flex items-center">
+                <Text className="text-rose-300 text-2xl">
+                  <FontAwesome name="rupee" size={20} color="#fda4af" />{" "}
                   {letUserMe.owe}
                 </Text>
               </View>

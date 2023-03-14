@@ -44,7 +44,20 @@ export const createUser = async (object, config) => {
 export const getUsers = async () => {
   try {
     const { data } = await client.get(`/user/get/all`);
-    return data.data;
+    return data;
+  } catch (error) {
+    const { response } = error;
+    if (response?.data) {
+      return response.data;
+    }
+    return { error: error.message || error };
+  }
+};
+
+export const getUsersByName = async (query) => {
+  try {
+    const { data } = await client.get(`/user/get/userByName?name=${query}`);
+    return data;
   } catch (error) {
     const { response } = error;
     if (response?.data) {

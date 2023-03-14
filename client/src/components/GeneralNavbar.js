@@ -1,20 +1,30 @@
 import { View, Text, TouchableOpacity, Alert } from "react-native";
-import React from "react";
+import React, { useEffect } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
-import { MaterialIcons } from "@expo/vector-icons";
-import { grpDelete } from "../api/group";
+import { MaterialIcons, FontAwesome } from "@expo/vector-icons";
+import { deleteGrpTxs, grpDelete } from "../api/group";
 
 const GeneralNavbar = (props) => {
   const navigation = useNavigation();
 
   const handleDelete = async () => {
-    const data = await grpDelete(props.grpId);
-    if (data?.success) {
-      Alert.alert("Group Deleted Successfully!");
-      navigation.navigate("MainSplit");
-    } else {
-      Alert.alert(data?.msg);
+    if (props?.deleteHandle === "grpDelete") {
+      const data = await grpDelete(props.grpId);
+      if (data?.success) {
+        Alert.alert("Group Deleted Successfully!");
+        navigation.navigate("MainSplit");
+      } else {
+        Alert.alert(data?.msg);
+      }
+    } else if (props?.deleteHandle === "grpExpeseDetails") {
+      const data = await deleteGrpTxs(props.grpId, props.item._id);
+      if (data?.success) {
+        Alert.alert("Transaction Deleted Successfully!");
+        navigation.goBack(null);
+      } else {
+        Alert.alert(data?.msg);
+      }
     }
   };
 
@@ -29,20 +39,42 @@ const GeneralNavbar = (props) => {
           </TouchableOpacity>
           <Text className="text-white ml-10 text-lg">{props.title}</Text>
         </View>
-        {props?.grpId?.length > 1 && (
+        <View className="flex flex-row items-center space-x-4">
+          {props?.showDeleteIcon && (
+            <TouchableOpacity
+              onPress={() => {
+                navigation.navigate("GrpAddExpense", {
+                  item: props.item,
+                  grpId: props.grpId,
+                  tag: "edit",
+                });
+              }}
+            >
+              <FontAwesome name="edit" size={19} color="#6D67C2" />
+            </TouchableOpacity>
+          )}
+          {props?.showDeleteIcon && (
+            <TouchableOpacity
+              onPress={() => {
+                handleDelete();
+              }}
+            >
+              <MaterialIcons
+                name="delete"
+                size={22}
+                color="#6D67C2"
+                className=" absolute"
+              />
+            </TouchableOpacity>
+          )}
           <TouchableOpacity
             onPress={() => {
-              handleDelete();
+              props.setShowDate(true);
             }}
           >
-            <MaterialIcons
-              name="delete"
-              size={20}
-              color="gray"
-              className=" absolute"
-            />
+            <MaterialIcons name="date-range" size={22} color="#5F68D1" />
           </TouchableOpacity>
-        )}
+        </View>
       </View>
     </View>
   );

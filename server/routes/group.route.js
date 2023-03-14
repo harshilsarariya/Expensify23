@@ -137,7 +137,7 @@ router.post("/:grpId/tx/add", async (req, res) => {
           description,
           lent,
           withUsers,
-          txDate: new Date(),
+          txDate,
         },
       },
     },
@@ -153,17 +153,17 @@ router.post("/:grpId/tx/add", async (req, res) => {
 });
 
 // # remove transaction
-router.post("/:grpId/tx/:txId/remove", async (req, res) => {
+router.put("/:grpId/tx/:txId/remove", async (req, res) => {
   const { grpId, txId } = req.params;
 
   if (!grpId)
     return res.json({ success: false, msg: "Group id cannot  be empty" });
   if (!txId) return res.json({ success: false, msg: "Tx id cannot  be empty" });
 
-  GroupModel.findOneAndUpdate(
+  await GroupModel.findOneAndUpdate(
     { _id: grpId, "txs._id": txId },
     {
-      "txs.$": null,
+      $pull: { txs: { _id: txId } },
     },
     { new: true }
   )
@@ -177,7 +177,7 @@ router.post("/:grpId/tx/:txId/remove", async (req, res) => {
 });
 
 // # edit the transaction
-router.post("/:grpId/tx/:txId/update", (req, res) => {
+router.put("/:grpId/tx/:txId/update", (req, res) => {
   const { grpId, txId } = req.params;
   const { paidBy, amount, category, description, lent, withUsers, txDate } =
     req.body;
@@ -193,7 +193,7 @@ router.post("/:grpId/tx/:txId/update", (req, res) => {
         description,
         lent,
         withUsers,
-        txDate: new Date(),
+        txDate,
       },
     },
     { new: true }
@@ -221,7 +221,7 @@ router.get("/:grpId/tx/settle/:ofUser/:withUser", async (req, res) => {
   let total = 0;
   if (allTxs) {
     allTxs.txs.forEach((txItem) => {
-      if (txItem.paidBy == ofUser) {
+      if (txItem?.paidBy == ofUser) {
         txItem.withUsers.forEach((wu) => {
           if (wu.userId == withUser) {
             total += wu.owe;
@@ -252,7 +252,7 @@ router.put("/:grpId/tx/settle/:ofUser/:withUser", async (req, res) => {
   const allTxs = await GroupModel.findOne({ _id: grpId }).select("txs");
   if (allTxs) {
     allTxs.txs.forEach(async (txItem) => {
-      if (txItem.paidBy == ofUser) {
+      if (txItem?.paidBy == ofUser) {
         await txItem.withUsers.forEach(async (wu) => {
           if (wu.userId == withUser) {
             await txItem.settledBy.push(withUser);
