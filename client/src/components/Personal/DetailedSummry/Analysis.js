@@ -5,6 +5,7 @@ import {
   ScrollView,
   StyleSheet,
   TouchableOpacity,
+  LogBox,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { AntDesign } from "@expo/vector-icons";
@@ -101,6 +102,7 @@ const Analysis = ({ navigation }) => {
   };
   useEffect(() => {
     handleUserId();
+    LogBox.ignoreAllLogs();
   }, []);
 
   useEffect(() => {
@@ -112,43 +114,6 @@ const Analysis = ({ navigation }) => {
   useEffect(() => {
     handleChartData();
   }, [categories]);
-
-  /*
-  const handleChartData = () => {
-    let colorArr = [
-      "#ea6d95",
-      "#ffea00",
-      "#6f8ff9",
-      "#b04e43",
-      "#58CF6C",
-      "#7B43A1",
-    ];
-    let index = 0,
-      totalExpense = 0;
-    setCategoryData([]);
-    setTotalExpenseOfMonth(0);
-    if (Array.isArray(categories)) {
-      categories.map((item) => {
-        let schema = {
-          name: "",
-          total: 0,
-          color: colorArr[index],
-          legendFontColor: colorArr[index++],
-          legendFontSize: 15,
-        };
-        schema.name = item.category;
-        schema.total = item.total;
-        totalExpense += item.total;
-        setCategoryData((prev) => [...prev, schema]);
-      });
-      setTotalExpenseOfMonth(totalExpense);
-    }
-  };
-
-
-
-
-*/
 
   return (
     <ScrollView className="mx-3" showsVerticalScrollIndicator={false}>
