@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { Alert, Image, Text, View } from "react-native";
 import { TextInput, TouchableOpacity } from "react-native-gesture-handler";
 import { getUserInfo, updateUserInfo } from "../../api/user";
-import CommonNav from "../../screens/Split/CommonNav";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import GeneralNavbar from "../GeneralNavbar";
 
