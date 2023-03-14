@@ -8,9 +8,9 @@ import {
   Foundation,
 } from "@expo/vector-icons";
 import moment from "moment";
-import { useIsFocused } from "@react-navigation/native";
+import { useIsFocused, useRoute } from "@react-navigation/native";
 import GeneralNavbar from "../GeneralNavbar";
-import { addTransaction } from "../../api/user";
+import { addTransaction, updateTransaction } from "../../api/user";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import RNDateTimePicker from "@react-native-community/datetimepicker";
 const config = {
@@ -31,6 +31,16 @@ const AddExpense = ({ setTabShown, navigation }) => {
   const [active, setActive] = useState("");
   const isFocused = useIsFocused();
 
+  const route = useRoute();
+  const { item, tag } = route.params;
+
+  const handleEditInfo = async () => {
+    setAmount(item.amount);
+    setCategory(item.category);
+    setActive(item.category);
+    setDescription(item.description);
+  };
+
   const handleExpense = async () => {
     const obj = {
       amount: amount,
@@ -42,7 +52,13 @@ const AddExpense = ({ setTabShown, navigation }) => {
       id: userId,
       txDate: moment(date).format(),
     };
-    const data = await addTransaction(obj, config);
+    let data;
+    if (tag === "add") {
+      data = await addTransaction(obj, config);
+    } else if (tag === "edit") {
+      obj.txDate = item?.txDate;
+      data = await updateTransaction(item._id, obj);
+    }
     if (data.success) {
       navigation.goBack(null);
     }
@@ -52,6 +68,9 @@ const AddExpense = ({ setTabShown, navigation }) => {
     await AsyncStorage.setItem("userId", "63f079bc145c6eb4ec252f67");
     const id = await AsyncStorage.getItem("userId");
     setUserId(id);
+    if (tag === "edit") {
+      handleEditInfo();
+    }
   };
 
   const toggleSwitch = () => setIsEnabled((previousState) => !previousState);
@@ -74,8 +93,9 @@ const AddExpense = ({ setTabShown, navigation }) => {
   return (
     <>
       <GeneralNavbar
-        title={"Add Expense"}
+        title={`${tag === "edit" ? "Edit" : "Add"}` + " Expense"}
         setShowDate={setShowDate}
+        expense={true}
         navigationPath={"Personal-Home"}
       />
       <View className="mx-3">
@@ -98,6 +118,7 @@ const AddExpense = ({ setTabShown, navigation }) => {
             className="text-[#C9CACD] text-xl"
             placeholderTextColor="#C9CACD"
             onChangeText={setAmount}
+            value={"" + amount}
             keyboardType="decimal-pad"
           />
           <TextInput
@@ -105,12 +126,15 @@ const AddExpense = ({ setTabShown, navigation }) => {
             placeholderTextColor="#6c6d70"
             className="bg-[#2A2E39] mt-3 text-[#C9CACD] w-4/6 p-2 rounded-lg"
             onChangeText={setDescription}
+            value={description}
           />
         </View>
         <View className="">
           <View className="flex flex-row justify-between mt-8">
             <Text className="text-[#BDBEC3]">Category</Text>
           </View>
+
+          {/* category selection */}
           <View className="flex flex-row space-x-5 mt-4">
             <TouchableOpacity
               onPress={() => {
@@ -192,6 +216,7 @@ const AddExpense = ({ setTabShown, navigation }) => {
               />
             </TouchableOpacity>
           </View>
+
           {/* <View className="mt-5 flex flex-row justify-between items-center">
             <Text className="text-[#CFD0D6]">
               Are you splitting this expense?

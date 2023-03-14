@@ -128,9 +128,11 @@ router.put("/tx/add", async (req, res) => {
 });
 
 // update transaction
-router.post("/tx/update", async (req, res) => {
-  const { amount, category, description, withUser, id, owe, lent, txId } =
+router.put("/tx/update/:txId", async (req, res) => {
+  const { amount, category, description, withUser, id, owe, lent, txDate } =
     req.body;
+
+  const { txId } = req.params;
 
   const txUpdater = await UserModel.findOneAndUpdate(
     { _id: id, "personalTxs._id": txId },
@@ -142,6 +144,7 @@ router.post("/tx/update", async (req, res) => {
         owe,
         lent,
         withUser,
+        txDate,
       },
     },
     { new: true }
@@ -152,19 +155,19 @@ router.post("/tx/update", async (req, res) => {
 });
 
 // delete transaction
-router.post("/tx/delete", async (req, res) => {
+router.put("/tx/delete", async (req, res) => {
   const { id, txId } = req.body;
 
   UserModel.findOneAndUpdate(
     { _id: id, "personalTxs._id": txId },
 
     {
-      "personalTxs.$": null,
+      $pull: { personalTxs: { _id: txId } },
     },
     { new: true }
   )
     .then((result) => {
-      return res.json({ success: true, data: result });
+      return res.json({ success: true });
     })
     .catch((err) => {
       return res.json({ success: false, err });

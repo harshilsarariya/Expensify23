@@ -80,6 +80,32 @@ export const addTransaction = async (object, config) => {
   }
 };
 
+export const updateTransaction = async (txId, object) => {
+  try {
+    const { data } = await client.put(`/user/tx/update/${txId}`, object);
+    return data;
+  } catch (error) {
+    const { response } = error;
+    if (response?.data) {
+      return response.data;
+    }
+    return { error: error.message || error };
+  }
+};
+
+export const deleteTransaction = async (object) => {
+  try {
+    const { data } = await client.put(`/user/tx/delete`, object);
+    return data;
+  } catch (error) {
+    const { response } = error;
+    if (response?.data) {
+      return response.data;
+    }
+    return { error: error.message || error };
+  }
+};
+
 export const fetchLatestTransactions = async (userId) => {
   try {
     const { data } = await client.get(

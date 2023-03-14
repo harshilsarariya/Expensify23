@@ -67,13 +67,15 @@ const GeneralNavbar = (props) => {
               />
             </TouchableOpacity>
           )}
-          <TouchableOpacity
-            onPress={() => {
-              props.setShowDate(true);
-            }}
-          >
-            <MaterialIcons name="date-range" size={22} color="#5F68D1" />
-          </TouchableOpacity>
+          {props?.expense && (
+            <TouchableOpacity
+              onPress={() => {
+                props.setShowDate(true);
+              }}
+            >
+              <MaterialIcons name="date-range" size={22} color="#5F68D1" />
+            </TouchableOpacity>
+          )}
         </View>
       </View>
     </View>
