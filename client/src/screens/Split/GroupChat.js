@@ -1,9 +1,8 @@
 import {
-  useIsFocused,
   useNavigation,
   useRoute,
 } from "@react-navigation/native";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   View,
   Modal,
@@ -34,7 +33,7 @@ const GroupChat = () => {
   const navigation = useNavigation();
   const [settleMemberId, setSettleMemberId] = useState("");
   const [settleUpiId, setSettleUpiId] = useState("");
-
+  const scrollViewRef = useRef();
   const handleUserId = async () => {
     setUserId(await AsyncStorage.getItem("userId"));
   };
@@ -97,6 +96,8 @@ const GroupChat = () => {
       <GeneralNavbar
         title={item.name}
         grpId={item._id}
+        showDeleteIcon={true}
+        deleteHandle={"grpDelete"}
         navigationPath={"MainSplit"}
       />
       <ImageBackground
@@ -228,7 +229,6 @@ const GroupChat = () => {
                 <TouchableOpacity
                   className="bg-[#5F68D1] w-full p-2 mt-2 items-center rounded-md"
                   onPress={() => {
-                    console.log(userInfo);
                     setPaymentModalOpen(false);
                     handleOnLinkPress(settleUpiId);
                   }}
@@ -242,12 +242,19 @@ const GroupChat = () => {
           </Modal>
 
           {/* expenses */}
-          <ScrollView className="mt-3" showsVerticalScrollIndicator={false}>
+          <ScrollView
+            className="mt-3"
+            ref={scrollViewRef}
+            onContentSizeChange={() =>
+              scrollViewRef.current.scrollToEnd({ animated: false })
+            }
+            showsVerticalScrollIndicator={false}
+          >
             <View className="flex flex-col">
               {chatData.map((chatItem, idx) => {
                 return (
                   <View className="my-2" key={idx}>
-                    <ChatCard item={chatItem} />
+                    <ChatCard item={chatItem} grpId={item._id} />
                   </View>
                 );
               })}
@@ -267,7 +274,7 @@ const GroupChat = () => {
             <TouchableOpacity
               className="font-medium rounded-lg p-2 w-2/5  bg-[#6561D2] uppercase py-2 text-center"
               onPress={() => {
-                navigation.navigate("GrpAddExpense");
+                navigation.navigate("GrpAddExpense", { item });
               }}
             >
               <Text className="text-[#d6d9e3] text-base mx-auto">
