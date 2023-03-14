@@ -7,13 +7,12 @@ import {
   Fontisto,
   Foundation,
 } from "@expo/vector-icons";
-// import { addTransaction } from "../../api/user";
 import moment from "moment";
 import { useIsFocused } from "@react-navigation/native";
 import GeneralNavbar from "../GeneralNavbar";
 import { addTransaction } from "../../api/user";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-
+import RNDateTimePicker from "@react-native-community/datetimepicker";
 const config = {
   method: "PUT",
   headers: {
@@ -22,14 +21,16 @@ const config = {
 };
 
 const AddExpense = ({ setTabShown, navigation }) => {
+  const [date, setDate] = useState(new Date());
+  const [showDate, setShowDate] = useState(false);
   const [isEnabled, setIsEnabled] = useState(false);
   const [amount, setAmount] = useState(0);
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState("General");
   const [userId, setUserId] = useState("");
   const [active, setActive] = useState("");
-
   const isFocused = useIsFocused();
+
   const handleExpense = async () => {
     const obj = {
       amount: amount,
@@ -39,9 +40,8 @@ const AddExpense = ({ setTabShown, navigation }) => {
       lent: 0,
       withUser: userId,
       id: userId,
-      txDate: moment(Date.now()).format(),
+      txDate: moment(date).format(),
     };
-
     const data = await addTransaction(obj, config);
     if (data.success) {
       navigation.goBack(null);
@@ -56,6 +56,12 @@ const AddExpense = ({ setTabShown, navigation }) => {
 
   const toggleSwitch = () => setIsEnabled((previousState) => !previousState);
 
+  const handleDate = (event, selectedDate) => {
+    const currentDate = selectedDate;
+    setDate(currentDate);
+    setShowDate(false);
+  };
+
   useEffect(() => {
     setTabShown(false);
     handleUserId();
@@ -67,9 +73,26 @@ const AddExpense = ({ setTabShown, navigation }) => {
 
   return (
     <>
-      <GeneralNavbar title={"Add Expense"} navigationPath={"Personal-Home"} />
+      <GeneralNavbar
+        title={"Add Expense"}
+        setShowDate={setShowDate}
+        navigationPath={"Personal-Home"}
+      />
       <View className="mx-3">
         <View className="mt-5 items-center">
+          {showDate && (
+            <RNDateTimePicker
+              mode="date"
+              onResponderRelease={() => {
+                setShowDate(false);
+              }}
+              onTouchEnd={() => {
+                setShowDate(false);
+              }}
+              onChange={handleDate}
+              value={date}
+            />
+          )}
           <TextInput
             placeholder="₹ 0"
             className="text-[#C9CACD] text-xl"
