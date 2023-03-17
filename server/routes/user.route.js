@@ -68,6 +68,7 @@ router.get("/getUserInfo/:id", async (req, res) => {
   const user = await UserModel.findById(id);
 
   res.json({
+    success: true,
     name: user.name,
     upiId: user.upiId,
   });
@@ -151,7 +152,6 @@ router.put("/tx/update/:txId", async (req, res) => {
   );
 
   return res.json({ success: true, data: txUpdater });
-  // return res.json({ success: false, err });
 });
 
 // delete transaction
@@ -168,6 +168,23 @@ router.put("/tx/delete", async (req, res) => {
   )
     .then((result) => {
       return res.json({ success: true });
+    })
+    .catch((err) => {
+      return res.json({ success: false, err });
+    });
+});
+
+// get transaction with txId
+router.get("/tx/get/:id/:txId", async (req, res) => {
+  const { id, txId } = req.params;
+  UserModel.findOne(
+    {
+      _id: id,
+    },
+    { personalTxs: { $elemMatch: { _id: txId } } }
+  )
+    .then((result) => {
+      return res.json({ success: true, data: result });
     })
     .catch((err) => {
       return res.json({ success: false, err });

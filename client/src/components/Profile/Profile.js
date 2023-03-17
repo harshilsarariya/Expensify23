@@ -8,7 +8,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 const Profile = ({ setTabShown }) => {
   const navigation = useNavigation();
   const [name, setName] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("9510142642");
   const isFocused = useIsFocused();
 
   const handleName = async () => {
@@ -34,11 +34,8 @@ const Profile = ({ setTabShown }) => {
           </View>
 
           <View className="ml-8">
-            <View className="flex flex-row justify-between w-9/12 items-center">
+            <View className="flex flex-row justify-between  items-center">
               <Text className="text-white text-xl">{name}</Text>
-              <TouchableOpacity>
-                <AntDesign name="edit" size={22} color="#4E4C8E" />
-              </TouchableOpacity>
             </View>
             <Text className="text-white text-base">{phoneNumber}</Text>
           </View>

@@ -16,7 +16,7 @@ const Navbar = () => {
     // API - fetch User name
     const data = await getUserInfo(userId);
     if (data?.success) {
-      setName(data.data.name);
+      setName(data.name);
       await AsyncStorage.setItem("name", name);
     }
   };

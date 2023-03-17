@@ -9,7 +9,7 @@ import UpdateProfile from "../components/Profile/UpdateProfile";
 const Stack = createStackNavigator();
 
 const ProfileNavigation = ({ setTabShown }) => {
-
+  
   return (
     <Stack.Navigator
       initialRouteName="Profile"

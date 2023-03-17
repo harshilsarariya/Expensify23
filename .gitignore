@@ -9,6 +9,7 @@
 /client/*.mobileprovision
 /client/*.orig.*
 /client/web-build/
+/client/android/
 
 # macOS
 /client/.DS_Store

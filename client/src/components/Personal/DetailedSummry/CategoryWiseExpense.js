@@ -1,6 +1,5 @@
-import { View, Text, ScrollView } from "react-native";
+import { ScrollView } from "react-native";
 import React, { useEffect, useState } from "react";
-// import { fetchCategoryWiseExpense } from "../../../api/user";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import Card from "../Card";

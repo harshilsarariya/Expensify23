@@ -11,8 +11,6 @@ const PersonalScreen = ({ navigation, setTabShown }) => {
 
   useEffect(() => {
     setTabShown(true);
-
-    console.log("Prsonal Screen ");
   }, [isFocused]);
 
   useEffect(() => {

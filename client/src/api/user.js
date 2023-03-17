@@ -80,6 +80,19 @@ export const addTransaction = async (object, config) => {
   }
 };
 
+export const getTransaction = async (userId, txId) => {
+  try {
+    const { data } = await client.get(`/user/tx/get/${userId}/${txId}`);
+    return data;
+  } catch (error) {
+    const { response } = error;
+    if (response?.data) {
+      return response.data;
+    }
+    return { error: error.message || error };
+  }
+};
+
 export const updateTransaction = async (txId, object) => {
   try {
     const { data } = await client.put(`/user/tx/update/${txId}`, object);
