@@ -1,5 +1,5 @@
 import { View, Text, TouchableOpacity, Alert } from "react-native";
-import React, { useEffect } from "react";
+import React from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { MaterialIcons, FontAwesome } from "@expo/vector-icons";
@@ -10,21 +10,43 @@ const GeneralNavbar = (props) => {
 
   const handleDelete = async () => {
     if (props?.deleteHandle === "grpDelete") {
-      const data = await grpDelete(props.grpId);
-      if (data?.success) {
-        Alert.alert("Group Deleted Successfully!");
-        navigation.navigate("MainSplit");
-      } else {
-        Alert.alert(data?.msg);
-      }
+      Alert.alert("Delete Group", "Are you sure?", [
+        {
+          text: "Yes",
+          onPress: async () => {
+            const data = await grpDelete(props.grpId);
+            if (data?.success) {
+              Alert.alert("Group Deleted Successfully!");
+              navigation.navigate("MainSplit");
+            } else {
+              Alert.alert(data?.msg);
+            }
+          },
+        },
+        {
+          text: "No",
+          style: "cancel",
+        },
+      ]);
     } else if (props?.deleteHandle === "grpExpeseDetails") {
-      const data = await deleteGrpTxs(props.grpId, props.item._id);
-      if (data?.success) {
-        Alert.alert("Transaction Deleted Successfully!");
-        navigation.goBack(null);
-      } else {
-        Alert.alert(data?.msg);
-      }
+      Alert.alert("Delete Expense", "Are you sure?", [
+        {
+          text: "Yes",
+          onPress: async () => {
+            const data = await deleteGrpTxs(props.grpId, props.item._id);
+            if (data?.success) {
+              Alert.alert("Transaction Deleted Successfully!");
+              navigation.goBack(null);
+            } else {
+              Alert.alert("Some Error Occur");
+            }
+          },
+        },
+        {
+          text: "No",
+          style: "cancel",
+        },
+      ]);
     }
   };
 
@@ -40,7 +62,7 @@ const GeneralNavbar = (props) => {
           <Text className="text-white ml-10 text-lg">{props.title}</Text>
         </View>
         <View className="flex flex-row items-center space-x-4">
-          {props?.showDeleteIcon && (
+          {props?.tag == "edit" && (
             <TouchableOpacity
               onPress={() => {
                 navigation.navigate("GrpAddExpense", {
