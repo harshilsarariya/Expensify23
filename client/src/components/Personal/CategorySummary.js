@@ -13,8 +13,6 @@ const CategorySummary = ({ navigation }) => {
   const [categoryData, setCategoryData] = useState([]);
   const [totalExpenseOfMonth, setTotalExpenseOfMonth] = useState(0);
   const [budget, setBudget] = useState(0);
-  const [budgetPercentage, setBudgetPercentage] = useState(0);
-
   const isFocused = useIsFocused();
 
   const handleCategory = async () => {
@@ -30,8 +28,6 @@ const CategorySummary = ({ navigation }) => {
     const data = await getBudget(userId);
 
     setBudget(data.budget);
-    let budgetPer = (100 * totalExpenseOfMonth) / budget;
-    setBudgetPercentage(Math.ceil(budgetPer));
   };
 
   const handleChartData = () => {
@@ -100,11 +96,8 @@ const CategorySummary = ({ navigation }) => {
         </View>
         <View>
           <Text className="text-[#C8CACF]">
-            {budgetPercentage}% budget used
+            {Math.ceil((100 * totalExpenseOfMonth) / budget)}% budget used
           </Text>
-          <View className="items-end mt-3">
-            <Progress.Pie progress={budgetPercentage / 100} size={25} />
-          </View>
         </View>
       </View>
 

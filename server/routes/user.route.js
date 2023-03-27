@@ -24,16 +24,36 @@ router.post("/add", (req, res) => {
     });
 });
 
-// update name only
-router.put("/update", (req, res) => {
-  const { id, name } = req.body;
-  UserModel.findOneAndUpdate({ _id: id }, { name }, { new: true })
-    .then((result) => {
-      return res.json({ success: true, data: result });
-    })
-    .catch((err) => {
-      return res.json({ success: false, err });
-    });
+// update name & upi id
+router.put("/update", async (req, res) => {
+  const { id, name, upiId } = req.body;
+  const user = await UserModel.findById(id);
+
+  if (!user) return res.status(401).json({ error: "User not found!" });
+
+  user.name = name;
+  user.upiId = upiId;
+
+  await user.save();
+
+  return res.json({ success: true, name: user.name, upiId: user.upiId });
+});
+
+// add expo token
+router.put("/expoPushTokens", async (req, res) => {
+  const { token, id } = req.body;
+  const user = await UserModel.findById(id);
+
+  if (!user) return res.status(401).json({ error: "User not found!" });
+
+  user.expoPushToken = token;
+
+  await user.save();
+
+  return res.json({
+    success: true,
+    msg: "Users ExpoToken Added successfully!",
+  });
 });
 
 // update budget only
@@ -57,6 +77,20 @@ router.put("/updateBudget/:id", async (req, res) => {
   });
 });
 
+// get name and upi id if available
+router.get("/getUserInfo/:id", async (req, res) => {
+  const { id } = req.params;
+  if (!id) return res.status(401).json({ error: "Invalid Request" });
+
+  const user = await UserModel.findById(id);
+
+  res.json({
+    success: true,
+    name: user.name,
+    upiId: user.upiId,
+  });
+});
+
 // get budget only
 router.get("/getBudget/:id", async (req, res) => {
   const { id } = req.params;
@@ -73,7 +107,6 @@ router.get("/getBudget/:id", async (req, res) => {
 router.put("/tx/add", async (req, res) => {
   const { amount, category, description, withUser, id, owe, lent, txDate } =
     req.body;
-
   const txAdder = await UserModel.findOneAndUpdate(
     { _id: id },
     {
@@ -113,9 +146,11 @@ router.put("/tx/add", async (req, res) => {
 });
 
 // update transaction
-router.post("/tx/update", async (req, res) => {
-  const { amount, category, description, withUser, id, owe, lent, txId } =
+router.put("/tx/update/:txId", async (req, res) => {
+  const { amount, category, description, withUser, id, owe, lent, txDate } =
     req.body;
+
+  const { txId } = req.params;
 
   const txUpdater = await UserModel.findOneAndUpdate(
     { _id: id, "personalTxs._id": txId },
@@ -127,26 +162,43 @@ router.post("/tx/update", async (req, res) => {
         owe,
         lent,
         withUser,
+        txDate,
       },
     },
     { new: true }
   );
 
   return res.json({ success: true, data: txUpdater });
-  // return res.json({ success: false, err });
 });
 
 // delete transaction
-router.post("/tx/delete", async (req, res) => {
+router.put("/tx/delete", async (req, res) => {
   const { id, txId } = req.body;
 
   UserModel.findOneAndUpdate(
     { _id: id, "personalTxs._id": txId },
 
     {
-      "personalTxs.$": null,
+      $pull: { personalTxs: { _id: txId } },
     },
     { new: true }
+  )
+    .then((result) => {
+      return res.json({ success: true });
+    })
+    .catch((err) => {
+      return res.json({ success: false, err });
+    });
+});
+
+// get transaction with txId
+router.get("/tx/get/:id/:txId", async (req, res) => {
+  const { id, txId } = req.params;
+  UserModel.findOne(
+    {
+      _id: id,
+    },
+    { personalTxs: { $elemMatch: { _id: txId } } }
   )
     .then((result) => {
       return res.json({ success: true, data: result });
@@ -167,21 +219,6 @@ router.get("/:id", (req, res) => {
   UserModel.findOne({ _id: id })
     .then((result) => {
       return res.json({ success: true, data: result });
-    })
-    .catch((err) => {
-      return res.json({ success: false, err });
-    });
-});
-
-router.get("/getName/:id", (req, res) => {
-  const { id } = req.params;
-  if (!id) {
-    return res.json({ success: false, data: "Please provide user  id  " });
-  }
-
-  UserModel.findOne({ _id: id })
-    .then((result) => {
-      return res.json({ success: true, data: result.name });
     })
     .catch((err) => {
       return res.json({ success: false, err });
@@ -222,14 +259,15 @@ router.get("/fetchCurrentMonthTransactions/:id", async (req, res) => {
   res.json(tx);
 });
 
-router.get("/fetchTodaysTransactions/:id", async (req, res) => {
+router.post("/fetchTodaysTransactions/:id", async (req, res) => {
   const { id } = req.params;
+  const { date } = req.body;
   if (!id) return res.status(401).json({ error: "Invalid Request" });
 
   const user = await UserModel.findById(id);
 
-  let currMonth = moment(Date.now()).format("MM");
-  let currDate = moment(Date.now()).format("DD");
+  let currMonth = moment(date).format("MM");
+  let currDate = moment(date).format("DD");
   let tx = new Array();
 
   user.personalTxs.map((item) => {
@@ -316,12 +354,22 @@ router.get("/:userId/catwise", async (req, res) => {
   }
   res.json(finalObj);
 });
-module.exports = router;
 
 //  fetch  all users
-
-router.get("/get/all", (req, res) => {
-  UserModel.find({}).then((result) => {
-    return res.json({ success: true, data: result });
+router.get("/get/all", async (req, res) => {
+  const users = await UserModel.find({});
+  let data = new Array();
+  users.map((item) => {
+    data.push({ id: item._id, name: item.name, phoneNumber: item.phoneNumber });
   });
+  return res.json({ data });
 });
+
+// fetch user by name
+router.get("/get/userByName", async (req, res) => {
+  const { name } = req.query;
+  const users = await UserModel.find({ name: { $regex: `${name}` } });
+  return res.json(users);
+});
+
+module.exports = router;

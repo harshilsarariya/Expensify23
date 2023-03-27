@@ -7,63 +7,38 @@ import SplitHome from "../screens/Split/SplitHome";
 import NewGroup from "../screens/Split/NewGroup";
 import GroupChat from "../screens/Split/GroupChat";
 // import Navbar from "../components/personal/Navbar";
-import TransDetails from "../components/split/ChatDetails";
+import ExpenseDetails from "../components/split/ExpenseDetails";
 import SettlePayment from "../components/split/SettlePayment";
+import GrpAddExpense from "../components/split/GrpAddExpense";
 
 const Stack = createStackNavigator();
 
 const SplitNavigation = ({ navigation }) => {
-//   const isFocused = useIsFocused();
-//   const [phoneNo, setPhoneNo] = useState("");
-
-//   const handleUserPage = async () => {
-//     try {
-//       const data = await AsyncStorage.getItem("isNewUser");
-//       if (data == "true") navigation.navigate("MobileNumber");
-//     } catch (e) {
-//       console.log(e);
-//     }
-//   };
-
-//   useEffect(() => {
-//     handleUserPage();
-//     setIsStartedFocus(isFocused);
-//   }, []);
-
   return (
     <>
-    <Stack.Navigator
-      initialRouteName="MainSplit"
-      screenOptions={{ headerShown: false }}
-    >
-      <Stack.Screen name="MainSplit">
-        {(props) => <SplitHome navigation={navigation} />}
-      </Stack.Screen>
-      <Stack.Screen name="GroupChat">
-        {(props) => <GroupChat navigation={navigation} />}
-      </Stack.Screen>
-      <Stack.Screen name="CreateGroup">
-        {(props) => 
-          <NewGroup
-            navigation={navigation}
-          />
-        }
-      </Stack.Screen>
-      <Stack.Screen name="TransDetails">
-        {(props) => 
-          <TransDetails
-            navigation={navigation}
-          />
-        }
-      </Stack.Screen>
-      <Stack.Screen name="PaySettle">
-        {(props) => 
-          <SettlePayment
-            navigation={navigation}
-          />
-        }
-      </Stack.Screen>
-    </Stack.Navigator>
+      <Stack.Navigator
+        initialRouteName="MainSplit"
+        screenOptions={{ headerShown: false }}
+      >
+        <Stack.Screen name="MainSplit">
+          {(props) => <SplitHome navigation={navigation} />}
+        </Stack.Screen>
+        <Stack.Screen name="GroupChat">
+          {(props) => <GroupChat navigation={navigation} />}
+        </Stack.Screen>
+        <Stack.Screen name="CreateGroup">
+          {(props) => <NewGroup navigation={navigation} />}
+        </Stack.Screen>
+        <Stack.Screen name="TransDetails">
+          {(props) => <ExpenseDetails navigation={navigation} />}
+        </Stack.Screen>
+        <Stack.Screen name="PaySettle">
+          {(props) => <SettlePayment navigation={navigation} />}
+        </Stack.Screen>
+        <Stack.Screen name="GrpAddExpense">
+          {(props) => <GrpAddExpense navigation={navigation} />}
+        </Stack.Screen>
+      </Stack.Navigator>
     </>
   );
 };

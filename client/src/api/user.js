@@ -44,7 +44,7 @@ export const createUser = async (object, config) => {
 export const getUsers = async () => {
   try {
     const { data } = await client.get(`/user/get/all`);
-    return data.data;
+    return data;
   } catch (error) {
     const { response } = error;
     if (response?.data) {
@@ -54,9 +54,61 @@ export const getUsers = async () => {
   }
 };
 
-export const addTransaction = async (object, config) => {
+export const getUsersByName = async (query) => {
   try {
-    const { data } = await client.put(`/user/tx/add`, object, config);
+    const { data } = await client.get(`/user/get/userByName?name=${query}`);
+    return data;
+  } catch (error) {
+    const { response } = error;
+    if (response?.data) {
+      return response.data;
+    }
+    return { error: error.message || error };
+  }
+};
+
+export const addTransaction = async (object) => {
+  try {
+    const { data } = await client.put(`/user/tx/add`, object);
+    return data;
+  } catch (error) {
+    const { response } = error;
+    if (response?.data) {
+      return response.data;
+    }
+    return { error: error.message || error };
+  }
+};
+
+export const getTransaction = async (userId, txId) => {
+  try {
+    const { data } = await client.get(`/user/tx/get/${userId}/${txId}`);
+    return data;
+  } catch (error) {
+    const { response } = error;
+    if (response?.data) {
+      return response.data;
+    }
+    return { error: error.message || error };
+  }
+};
+
+export const updateTransaction = async (txId, object) => {
+  try {
+    const { data } = await client.put(`/user/tx/update/${txId}`, object);
+    return data;
+  } catch (error) {
+    const { response } = error;
+    if (response?.data) {
+      return response.data;
+    }
+    return { error: error.message || error };
+  }
+};
+
+export const deleteTransaction = async (object) => {
+  try {
+    const { data } = await client.put(`/user/tx/delete`, object);
     return data;
   } catch (error) {
     const { response } = error;
@@ -125,10 +177,11 @@ export const fetchCurrentMonthTransactions = async (userId) => {
   }
 };
 
-export const fetchTodaysTransactions = async (userId) => {
+export const fetchTodaysTransactions = async (userId, obj) => {
   try {
-    const { data } = await client.get(
-      `/user/fetchTodaysTransactions/${userId}`
+    const { data } = await client.post(
+      `/user/fetchTodaysTransactions/${userId}`,
+      obj
     );
     return data;
   } catch (error) {
@@ -158,9 +211,9 @@ export const updateBudget = async (userId, object, config) => {
   }
 };
 
-export const updateName = async (userId, object, config) => {
+export const updateUserInfo = async (object) => {
   try {
-    const { data } = await client.put(`/user/update`, object, config);
+    const { data } = await client.put(`/user/update`, object);
     return data;
   } catch (error) {
     const { response } = error;
@@ -184,9 +237,23 @@ export const getBudget = async (userId) => {
   }
 };
 
-export const getName = async (userId) => {
+export const getUserInfo = async (userId) => {
   try {
-    const { data } = await client.get(`/user/getName/${userId}`);
+    const { data } = await client.get(`/user/getUserInfo/${userId}`);
+    return data;
+  } catch (error) {
+    const { response } = error;
+    if (response?.data) {
+      return response.data;
+    }
+    return { error: error.message || error };
+  }
+};
+
+// register expo token
+export const saveExpoToken = async (token, id) => {
+  try {
+    const { data } = await client.put(`/user/expoPushTokens`, { token, id });
     return data;
   } catch (error) {
     const { response } = error;

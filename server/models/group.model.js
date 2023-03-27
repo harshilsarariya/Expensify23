@@ -7,6 +7,7 @@ const GroupSchema = mongoose.Schema({
     type: [
       mongoose.Schema({
         paidBy: mongoose.Types.ObjectId,
+        settledBy: [mongoose.Types.ObjectId],
         amount: Number,
         category: String,
         description: String,

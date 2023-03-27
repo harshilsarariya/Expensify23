@@ -29,20 +29,22 @@ const GroupList = () => {
     <>
       <View className="flex flex-row justify-between my-4">
         <Text className="text-white font-medium text-xl">Groups</Text>
-        <TouchableWithoutFeedback
+        <TouchableOpacity
           onPress={() => navigator.navigate("CreateGroup")}
+          className="items-center flex flex-row space-x-2"
         >
-          <Text className="text-indigo-600 font-medium">
-            <AntDesign name="plus" size={16} color="#6366f1" /> Create Group
-          </Text>
-        </TouchableWithoutFeedback>
+          <AntDesign name="plus" size={16} color="#6A62CE" />
+          <Text className="text-[#6A62CE] font-medium">Create Group</Text>
+        </TouchableOpacity>
       </View>
-      <ScrollView className="mb-48" showsVerticalScrollIndicator={false}>
+      <ScrollView className="mb-16" showsVerticalScrollIndicator={false}>
         <View className="flex space-y-4 mb-4">
           {grpData.map((item, idx) => {
             return (
               <TouchableOpacity
-                onPress={() => navigator.navigate("GroupChat", { item })}
+                onPress={() => {
+                  navigator.navigate("GroupChat", { item, grpId: item._id });
+                }}
                 key={idx}
               >
                 <GroupCard item={item} />
@@ -58,10 +60,9 @@ const GroupList = () => {
 const GroupCard = ({ item }) => {
   return (
     <>
-      <View className="flex flex-row justify-between items-center p-2">
+      <View className="flex flex-row justify-between items-center p-2 border-b-2 pb-5 border-b-[#2B2C3E]">
         <View className="bg-gray-100 flex rounded-full">
-          {/* <Image className="h-16 w-16 rounded-full" source={require("../../assets/images/avatar2.png")} /> */}
-          <Text className="text-3xl font-bold px-4 py-2 text-center text-blue-900">
+          <Text className="text-3xl font-bold  text-center text-blue-900 p-2 px-5 rounded-full ">
             {item.name[0]}
           </Text>
         </View>

@@ -24,8 +24,7 @@ export default function App() {
   }, [netInfo]);
 
   if (noInternet) {
-    Alert.alert("");
-    console.log("No Internet");
+    Alert.alert("No Internet");
   }
 
   return (

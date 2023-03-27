@@ -11,8 +11,6 @@ const PersonalScreen = ({ navigation, setTabShown }) => {
 
   useEffect(() => {
     setTabShown(true);
-
-    console.log("Prsonal Screen ");
   }, [isFocused]);
 
   useEffect(() => {
@@ -31,7 +29,7 @@ const PersonalScreen = ({ navigation, setTabShown }) => {
         activeOpacity={0.9}
         className=" absolute top-[620] right-[0] bg-[#6561D2] p-2 rounded-lg  "
         onPress={() => {
-          navigation.navigate("Personal-AddExpense");
+          navigation.navigate("Personal-AddExpense", { tag: "add", item: "" });
         }}
       >
         <Text className="text-white text-base">+ Add Personal Expense</Text>
