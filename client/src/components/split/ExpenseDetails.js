@@ -1,4 +1,4 @@
-import { Text } from "react-native";
+import { ScrollView, Text } from "react-native";
 import { View } from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
 import { Image } from "react-native";
@@ -52,7 +52,7 @@ const ExpenseDetails = () => {
         editNaivigation={"GrpAddExpense"}
       />
 
-      <View className="p-4">
+      <ScrollView showsVerticalScrollIndicator={false} className="p-4 mb-20">
         <View className="flex items-center my-6">
           <Text className="text-white text-3xl font-semibold">
             <FontAwesome name="rupee" size={28} color="white" /> {item.amount}
@@ -113,7 +113,7 @@ const ExpenseDetails = () => {
             })}
           </View>
         </View>
-      </View>
+      </ScrollView>
     </>
   );
 };

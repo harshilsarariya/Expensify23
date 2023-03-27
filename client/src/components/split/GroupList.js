@@ -43,7 +43,7 @@ const GroupList = () => {
             return (
               <TouchableOpacity
                 onPress={() => {
-                  navigator.navigate("GroupChat", { item });
+                  navigator.navigate("GroupChat", { item, grpId: item._id });
                 }}
                 key={idx}
               >

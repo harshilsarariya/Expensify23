@@ -16,14 +16,17 @@ const ChatCard = ({ item, grpId }) => {
   };
 
   let letUserMe;
-  item?.withUsers.forEach((wu) => {
-    if (wu.userId === userId) {
-      letUserMe = wu;
-    }
-  });
 
   useEffect(() => {
     handleUserId();
+  }, []);
+
+  useEffect(() => {
+    item?.withUsers.forEach((wu) => {
+      if (wu.userId === userId) {
+        letUserMe = wu;
+      }
+    });
   }, []);
 
   return (
@@ -46,7 +49,7 @@ const ChatCard = ({ item, grpId }) => {
               <View className="h-10 flex items-center justify-center ">
                 <Text className="text-[#b9fda4] text-2xl">
                   <FontAwesome name="rupee" size={20} color="#b9fda4" />{" "}
-                  {item?.lent}
+                  {Math.round(item?.lent)}
                 </Text>
               </View>
               <View className="bg-[#2E3442] p-4">

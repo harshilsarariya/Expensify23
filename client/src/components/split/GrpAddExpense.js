@@ -16,9 +16,9 @@ import {
   Foundation,
 } from "@expo/vector-icons";
 import moment from "moment";
-import { useIsFocused, useRoute } from "@react-navigation/native";
+import { useRoute } from "@react-navigation/native";
 import GeneralNavbar from "../GeneralNavbar";
-import { addTransaction, getUserInfo } from "../../api/user";
+import { addTransaction, getUserInfo, saveExpoToken } from "../../api/user";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Feather } from "@expo/vector-icons";
 import { Checkbox } from "react-native-paper";
@@ -37,7 +37,7 @@ const GrpAddExpense = (props) => {
   const [usersData, setUsersData] = useState([]);
   const [withUsers, setWithUsers] = useState([]);
   const [grpName, setGrpName] = useState("");
-
+  // handle values if user wants edit expense
   const handleEditInfo = async () => {
     setUserId(item.paidBy);
     setCategory(item.category);
@@ -45,24 +45,24 @@ const GrpAddExpense = (props) => {
     setAmount(item.amount);
     setWithUsers(item.withUsers);
   };
+  // saving expense
   const handleSaveExpense = async () => {
-    const obj = {
+    let obj = {
       paidBy: userId,
       category: category,
       description: description,
       owe: 0,
-      lent: amount / (item?.withUsers.length || item?.members.length),
       withUsers: withUsers,
       txDate: item?.txDate || moment(Date.now()).format(),
       amount: amount,
     };
     let data = { success: false };
     if (tag === "add") {
-      data = await addGrpTxs(item._id, obj);
+      obj.lent = amount - amount / withUsers.length;
+      data = await addGrpTxs(grpId, obj);
     } else if (tag === "edit") {
       data = await updateGrpTxs(grpId, item._id, obj);
     }
-    console.log(data);
     if (data?.success) {
       props.navigation.goBack(null);
     } else {
@@ -82,13 +82,13 @@ const GrpAddExpense = (props) => {
 
   const handleUsersData = async () => {
     setUsersData([]);
-    // item.members.map(async (item) => {
-    //   const { name } = await getUserInfo(item);
-    //   setUsersData((prev) => [
-    //     ...prev,
-    //     { memberId: item, name: name, checked: false },
-    //   ]);
-    // });
+    item.members.map(async (item) => {
+      const { name } = await getUserInfo(item);
+      setUsersData((prev) => [
+        ...prev,
+        { memberId: item, name: name, checked: false },
+      ]);
+    });
   };
 
   const handleGrpName = async () => {
@@ -192,7 +192,7 @@ const GrpAddExpense = (props) => {
                           placeholderTextColor={"white"}
                           placeholder="$"
                           className={`text-base text-white `}
-                          value={"" + amount / 2}
+                          value={"" + amount / withUsers.length}
                         />
                       </View>
                     </View>
@@ -306,18 +306,6 @@ const GrpAddExpense = (props) => {
               />
             </TouchableOpacity>
           </View>
-          {/* <View className="mt-5 flex flex-row justify-between items-center">
-            <Text className="text-[#CFD0D6]">
-              Are you splitting this expense?
-            </Text>
-            <Switch
-              trackColor={{ false: "#767577", true: "#81b0ff" }}
-              thumbColor={isEnabled ? "#5F68D1" : "#f4f3f4"}
-              ios_backgroundColor="#3e3e3e"
-              onValueChange={toggleSwitch}
-              value={isEnabled}
-            />
-          </View> */}
           <View className="space-y-4 mt-5">
             <Text className=" text-[#BCBDC2]">
               You are splitting this expense.
