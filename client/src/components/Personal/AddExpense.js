@@ -13,12 +13,6 @@ import GeneralNavbar from "../GeneralNavbar";
 import { addTransaction, updateTransaction } from "../../api/user";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import RNDateTimePicker from "@react-native-community/datetimepicker";
-const config = {
-  method: "PUT",
-  headers: {
-    "content-type": "application/json",
-  },
-};
 
 const AddExpense = ({ setTabShown, navigation }) => {
   const [date, setDate] = useState(new Date());
@@ -54,7 +48,7 @@ const AddExpense = ({ setTabShown, navigation }) => {
     };
     let data;
     if (tag === "add") {
-      data = await addTransaction(obj, config);
+      data = await addTransaction(obj);
     } else if (tag === "edit") {
       obj.txDate = item?.txDate;
       data = await updateTransaction(item._id, obj);
