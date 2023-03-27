@@ -2,9 +2,10 @@ const mongoose = require("mongoose");
 
 const UserSchema = mongoose.Schema({
   name: { type: String },
-  phoneNumber: { type: String },
+  phoneNumber: { type: String, unique: true },
   budget: { type: Number },
   upiId: { type: String },
+  expoPushToken: { type: String },
   personalTxs: {
     type: [
       mongoose.Schema({

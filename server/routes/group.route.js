@@ -1,5 +1,6 @@
 const GroupModel = require("../models/group.model");
 const UserModel = require("../models/user.model");
+const { sendPushNotification } = require("../utilities/PushNotification");
 
 const router = require("express").Router();
 
@@ -126,7 +127,7 @@ router.post("/:grpId/tx/add", async (req, res) => {
 
   const { paidBy, amount, category, description, lent, withUsers, txDate } =
     req.body;
-  GroupModel.findOneAndUpdate(
+  const data = await GroupModel.findOneAndUpdate(
     { _id: grpId },
     {
       $push: {
@@ -142,14 +143,31 @@ router.post("/:grpId/tx/add", async (req, res) => {
       },
     },
     { new: true }
-  )
-    .then((result) =>
-      res.json({
-        success: true,
-        data: result,
-      })
-    )
-    .catch((err) => console.log(err));
+  );
+
+  const grp = await GroupModel.findById(grpId);
+  const paidByUser = await UserModel.findById(paidBy);
+  withUsers?.map(async (wu) => {
+    const user = await UserModel.findById(wu.userId);
+    const { expoPushToken } = user;
+
+    if (expoPushToken !== undefined) {
+      sendPushNotification(
+        expoPushToken,
+        "New Expense of " +
+          description +
+          " from " +
+          paidByUser.name +
+          "in " +
+          grp.name
+      );
+    }
+  });
+
+  return res.json({
+    success: true,
+    data: data,
+  });
 });
 
 // # remove transaction

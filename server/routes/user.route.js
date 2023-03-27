@@ -39,6 +39,23 @@ router.put("/update", async (req, res) => {
   return res.json({ success: true, name: user.name, upiId: user.upiId });
 });
 
+// add expo token
+router.put("/expoPushTokens", async (req, res) => {
+  const { token, id } = req.body;
+  const user = await UserModel.findById(id);
+
+  if (!user) return res.status(401).json({ error: "User not found!" });
+
+  user.expoPushToken = token;
+
+  await user.save();
+
+  return res.json({
+    success: true,
+    msg: "Users ExpoToken Added successfully!",
+  });
+});
+
 // update budget only
 router.put("/updateBudget/:id", async (req, res) => {
   const { id } = req.params;

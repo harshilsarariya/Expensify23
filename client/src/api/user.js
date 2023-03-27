@@ -67,9 +67,9 @@ export const getUsersByName = async (query) => {
   }
 };
 
-export const addTransaction = async (object, config) => {
+export const addTransaction = async (object) => {
   try {
-    const { data } = await client.put(`/user/tx/add`, object, config);
+    const { data } = await client.put(`/user/tx/add`, object);
     return data;
   } catch (error) {
     const { response } = error;
@@ -240,6 +240,20 @@ export const getBudget = async (userId) => {
 export const getUserInfo = async (userId) => {
   try {
     const { data } = await client.get(`/user/getUserInfo/${userId}`);
+    return data;
+  } catch (error) {
+    const { response } = error;
+    if (response?.data) {
+      return response.data;
+    }
+    return { error: error.message || error };
+  }
+};
+
+// register expo token
+export const saveExpoToken = async (token, id) => {
+  try {
+    const { data } = await client.put(`/user/expoPushTokens`, { token, id });
     return data;
   } catch (error) {
     const { response } = error;
