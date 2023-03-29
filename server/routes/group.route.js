@@ -231,60 +231,99 @@ router.get("/get/all", (req, res) => {
   });
 });
 
-// settle transaction
-router.get("/:grpId/tx/settle/:ofUser/:withUser", async (req, res) => {
-  const { grpId, ofUser, withUser } = req.params;
-  const allTxs = await GroupModel.findOne({ _id: grpId }).select("txs");
+// # settle expenses
+router.put("/settle/:groupId", async (req, res) => {
+  const { groupId } = req.params;
+  const { userId, amount } = req.body;
 
-  let total = 0;
-  if (allTxs) {
-    allTxs.txs.forEach((txItem) => {
-      if (txItem?.paidBy == ofUser) {
-        txItem.withUsers.forEach((wu) => {
-          if (wu.userId == withUser) {
-            total += wu.owe;
-          }
-        });
-      } else if (txItem.paidBy == withUser) {
-        txItem.withUsers.forEach((wu) => {
-          if (wu.userId == ofUser) {
-            total -= wu.owe;
-          }
-        });
+  try {
+    const group = await GroupModel.findById(groupId);
+    if (!group) {
+      return res.status(404).json({ message: "Group not found" });
+    }
+
+    const userIndex = group.txs.findIndex(
+      (tx) => tx.paidBy.toString() !== userId && !tx.settledBy.includes(userId)
+    );
+
+    if (userIndex === -1) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const tx = group.txs[userIndex];
+    const totalOwes = tx.withUsers.reduce((acc, user) => {
+      if (user.userId.toString() === userId) {
+        return acc + user.owe;
+      }
+      return acc;
+    }, 0);
+
+    if (amount > totalOwes) {
+      return res.status(400).json({ message: "Invalid amount" });
+    }
+
+    tx.settledBy.push(userId);
+
+    tx.withUsers.forEach((user) => {
+      if (user.userId.toString() === userId) {
+        user.owe = totalOwes - amount;
+      } else {
+        user.owe = user.owe - (amount / totalOwes) * user.owe;
       }
     });
-  }
 
-  const { upiId } = await UserModel.findOne({ _id: ofUser }).select("upiId");
-  return res.json({
-    succes: true,
-    data: total,
-    linkToPay: `upi://pay?pa=${upiId}&am=${total}`,
-  });
+    await group.save();
+    return res.json({ success: true, message: "Expense settled successfully" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Internal server error" });
+  }
 });
 
-// # settle expenses
-router.put("/:grpId/tx/settle/:ofUser/:withUser", async (req, res) => {
-  const { grpId, ofUser, withUser } = req.params;
+//  returns the amount that a user has to give to each user in a group
+router.get("/exp/:userId/:groupId", async (req, res) => {
+  const { userId, groupId } = req.params;
+  try {
+    const user = await UserModel.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
 
-  const allTxs = await GroupModel.findOne({ _id: grpId }).select("txs");
-  if (allTxs) {
-    allTxs.txs.forEach(async (txItem) => {
-      if (txItem?.paidBy == ofUser) {
-        await txItem.withUsers.forEach(async (wu) => {
-          if (wu.userId == withUser) {
-            await txItem.settledBy.push(withUser);
-          }
-        });
-      }
+    const group = await GroupModel.findById(groupId);
+    if (!group) {
+      return res.status(404).json({ message: "Group not found" });
+    }
+
+    const expenses = group.txs.filter(
+      (tx) => tx.paidBy.toString() !== userId && !tx.settledBy.includes(userId)
+    );
+    const summary = {};
+    expenses.forEach((expense) => {
+      expense.withUsers.forEach((user) => {
+        if (user.userId.toString() === userId) {
+          summary[expense.paidBy.toString()] =
+            (summary[expense.paidBy.toString()] || 0) + user.owe;
+        } else if (user.userId.toString() !== expense.paidBy.toString()) {
+          summary[user.userId.toString()] =
+            (summary[user.userId.toString()] || 0) - user.owe;
+        }
+      });
     });
+    // The owes field in the response shows how much money you are owed by each group member
+    const response = Object.keys(summary).map(async (key) => {
+      const user = await UserModel.findById(key).select("name upiId");
+      return {
+        userId: key,
+        name: user.name,
+        owes: summary[key],
+        upiId: user.upiId,
+      };
+    });
+    return res.json(await Promise.all(response));
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Internal server error" });
   }
-  await allTxs.save();
-
-  return res.json({
-    succes: true,
-    msg: "Updated Succesfully",
-  });
 });
 
 module.exports = router;
