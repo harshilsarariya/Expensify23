@@ -9,7 +9,6 @@ import UpdateProfile from "../components/Profile/UpdateProfile";
 const Stack = createStackNavigator();
 
 const ProfileNavigation = ({ setTabShown }) => {
-  
   return (
     <Stack.Navigator
       initialRouteName="Profile"
@@ -20,10 +19,10 @@ const ProfileNavigation = ({ setTabShown }) => {
       </Stack.Screen>
       <Stack.Screen name="Settings">{(props) => <Setting />}</Stack.Screen>
       <Stack.Screen name="UpdateProfile">
-        {(props) => <UpdateProfile />}
+        {(props) => <UpdateProfile setTabShown={setTabShown} />}
       </Stack.Screen>
       <Stack.Screen name="BudgetCycle">
-        {(props) => <BudgetCycle />}
+        {(props) => <BudgetCycle setTabShown={setTabShown} />}
       </Stack.Screen>
     </Stack.Navigator>
   );

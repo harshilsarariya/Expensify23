@@ -5,7 +5,7 @@ import { getUserInfo, updateUserInfo } from "../../api/user";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import GeneralNavbar from "../GeneralNavbar";
 
-const UpdateProfile = () => {
+const UpdateProfile = ({ setTabShown }) => {
   const [name, setName] = useState("");
   const [upiId, setUpiId] = useState("123");
   const [userId, setUserId] = useState("");
@@ -42,6 +42,7 @@ const UpdateProfile = () => {
 
   useEffect(() => {
     handleUserId();
+    setTabShown(false);
   }, []);
 
   useEffect(() => {

@@ -21,7 +21,7 @@ const Profile = ({ setTabShown }) => {
   }, []);
 
   useEffect(() => {
-    setTabShown(false);
+    setTabShown(true);
   }, [isFocused]);
 
   return (

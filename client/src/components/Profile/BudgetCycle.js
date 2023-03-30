@@ -21,7 +21,7 @@ const config = {
   },
 };
 
-const BudgetCycle = () => {
+const BudgetCycle = ({ setTabShown }) => {
   const [budget, setBudget] = useState(0);
   const [userId, setUserId] = useState("");
 
@@ -45,6 +45,7 @@ const BudgetCycle = () => {
 
   useEffect(() => {
     handleUserId();
+    setTabShown(false);
   }, []);
 
   return (
