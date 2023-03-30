@@ -225,6 +225,41 @@ router.get("/:id", (req, res) => {
     });
 });
 
+router.get("/txs/:id", (req, res) => {
+  const { id } = req.params;
+  if (!id) {
+    return res.json({ success: false, data: "Please provide user  id  " });
+  }
+
+  UserModel.findOne({ _id: id })
+    .then((result) => {
+      return res.json({ success: true, data: result.personalTxs });
+    })
+    .catch((err) => {
+      return res.json({ success: false, err });
+    });
+});
+
+router.put("/clear-txs/:id", async (req, res) => {
+  const { id } = req.params;
+  if (!id) {
+    return res.json({ success: false, message: "Please provide user  id  " });
+  }
+
+  const user = await UserModel.findById(id);
+  if (!user) {
+    return res.status(404).json({ message: "User not found" });
+  }
+
+  user.personalTxs = []; // Clear the personaltx array
+
+  await user.save();
+  return res.json({
+    success: true,
+    message: "Transactions cleared successfully",
+  });
+});
+
 router.get("/fetchLatestTransactions/:id", async (req, res) => {
   const { id } = req.params;
 
