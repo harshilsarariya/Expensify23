@@ -1,12 +1,4 @@
-import {
-  View,
-  Text,
-  TextInput,
-  Switch,
-  Modal,
-  ScrollView,
-  Alert,
-} from "react-native";
+import { View, Text, TextInput, Modal, ScrollView, Alert } from "react-native";
 import React, { useEffect, useState } from "react";
 import { TouchableOpacity } from "react-native";
 import {
@@ -18,7 +10,7 @@ import {
 import moment from "moment";
 import { useRoute } from "@react-navigation/native";
 import GeneralNavbar from "../GeneralNavbar";
-import { addTransaction, getUserInfo, saveExpoToken } from "../../api/user";
+import { getUserInfo } from "../../api/user";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Feather } from "@expo/vector-icons";
 import { Checkbox } from "react-native-paper";
@@ -27,7 +19,6 @@ import { addGrpTxs, getGrpInfo, updateGrpTxs } from "../../api/group";
 const GrpAddExpense = (props) => {
   const route = useRoute();
   const { item, grpId, tag } = route.params;
-  const [isEnabled, setIsEnabled] = useState(false);
   const [amount, setAmount] = useState(0);
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState("General");
@@ -37,6 +28,7 @@ const GrpAddExpense = (props) => {
   const [usersData, setUsersData] = useState([]);
   const [withUsers, setWithUsers] = useState([]);
   const [grpName, setGrpName] = useState("");
+  const [lentAmount, setLentAmount] = useState(0);
   // handle values if user wants edit expense
   const handleEditInfo = async () => {
     setUserId(item.paidBy);
@@ -45,6 +37,7 @@ const GrpAddExpense = (props) => {
     setAmount(item.amount);
     setWithUsers(item.withUsers);
   };
+
   // saving expense
   const handleSaveExpense = async () => {
     let obj = {
@@ -58,7 +51,7 @@ const GrpAddExpense = (props) => {
     };
     let data = { success: false };
     if (tag === "add") {
-      obj.lent = amount - amount / withUsers.length;
+      obj.lent = lentAmount;
       data = await addGrpTxs(grpId, obj);
     } else if (tag === "edit") {
       data = await updateGrpTxs(grpId, item._id, obj);
@@ -86,32 +79,43 @@ const GrpAddExpense = (props) => {
       const { name } = await getUserInfo(item);
       setUsersData((prev) => [
         ...prev,
-        { memberId: item, name: name, checked: false },
+        { id: item, name: name, isChecked: false },
       ]);
     });
   };
 
+  const handleSplitExpense = () => {
+    const totalMembers = usersData.filter((member) => member.isChecked).length;
+    if (totalMembers === 0) {
+      Alert.alert("Please select at least one member");
+      return;
+    }
+    const selectedUsers = usersData
+      .filter((member) => member.isChecked)
+      .map((member) => member.id);
+    const expensePerMember = amount / totalMembers;
+    const newWithUsers = selectedUsers.map((id) => {
+      const amountToPay = expensePerMember;
+      return { userId: id, owe: amountToPay };
+    });
+    setWithUsers(newWithUsers);
+
+    setModalOpen(false);
+  };
+
+  useEffect(() => {
+    let lentAmt = 0;
+    withUsers.map((item) => {
+      if (item.userId !== userId) {
+        lentAmt += item.owe;
+      }
+    });
+    setLentAmount(lentAmt);
+  }, [withUsers]);
+
   const handleGrpName = async () => {
     const data = await getGrpInfo(grpId);
     setGrpName(data.name);
-  };
-
-  const toggleSwitch = () => setIsEnabled((previousState) => !previousState);
-
-  const handleChecked = (idx) => {
-    let data = usersData;
-
-    data[idx].checked = data[idx].checked ? false : true;
-    setUsersData(data);
-    if (usersData[idx].checked) {
-      setWithUsers((prev) => [
-        ...prev,
-        {
-          userId: usersData[idx].memberId,
-          owe: amount / item.members.length,
-        },
-      ]);
-    }
   };
 
   useEffect(() => {
@@ -151,7 +155,7 @@ const GrpAddExpense = (props) => {
                 />
                 <TouchableOpacity
                   onPress={() => {
-                    setModalOpen(false);
+                    handleSplitExpense();
                   }}
                 >
                   <Text className="text-[#6662BB] text-lg mr-3">Done</Text>
@@ -166,35 +170,36 @@ const GrpAddExpense = (props) => {
                 </View>
                 <ScrollView
                   showsVerticalScrollIndicator={false}
-                  className="mt-3"
+                  className="mt-3 mb-20"
                 >
-                  {usersData.map((item, idx) => (
+                  {usersData.map((member, idx) => (
                     <View
                       className="flex flex-row items-center justify-between mt-2"
                       key={idx}
                     >
                       <View className="flex flex-row items-center space-x-2">
                         <Checkbox
-                          status={"checked"}
+                          status={member.isChecked ? "checked" : "unchecked"}
                           onPress={() => {
-                            handleChecked(idx);
+                            setUsersData((prevState) => {
+                              const updatedMembers = [...prevState];
+                              const index = updatedMembers.findIndex(
+                                (m) => m.id === member.id
+                              );
+                              updatedMembers[index].isChecked =
+                                !updatedMembers[index].isChecked;
+                              return updatedMembers;
+                            });
                           }}
                         />
                         <View className="bg-gray-600 p-2 rounded-full">
                           <Feather name="user" size={18} color="white" />
                         </View>
                         <Text className="text-white text-base">
-                          {item.name}
+                          {member.name}
                         </Text>
                       </View>
-                      <View className="bg-[#2A2B47] w-14 border-2 px-2 rounded-lg border-[#3F3B75]">
-                        <TextInput
-                          placeholderTextColor={"white"}
-                          placeholder="$"
-                          className={`text-base text-white `}
-                          value={"" + amount / withUsers.length}
-                        />
-                      </View>
+                      
                     </View>
                   ))}
                 </ScrollView>
