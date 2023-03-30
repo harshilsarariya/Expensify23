@@ -116,3 +116,16 @@ export const deleteGrpTxs = async (grpID, txId) => {
     return { error: error.message || error };
   }
 };
+
+export const getGrpTxs = async (grpID) => {
+  try {
+    const { data } = await client.get(`/grp/${grpID}/txs`);
+    return data;
+  } catch (error) {
+    const { response } = error;
+    if (response?.data) {
+      return response.data;
+    }
+    return { error: error.message || error };
+  }
+};

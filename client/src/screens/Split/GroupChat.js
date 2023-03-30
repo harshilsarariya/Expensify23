@@ -18,7 +18,7 @@ import GeneralNavbar from "../../components/GeneralNavbar";
 import ChatCard from "../../components/split/ChatCard";
 import * as Linking from "expo-linking";
 import { FontAwesome } from "@expo/vector-icons";
-import { grpExpenseForSettle, settleExpense } from "../../api/group";
+import { getGrpTxs, grpExpenseForSettle, settleExpense } from "../../api/group";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import bgImg from "../../assets/images/bg-dark.jpg";
 
@@ -56,6 +56,11 @@ const GroupChat = () => {
     Alert.alert(data?.message);
   };
 
+  const handleGroupTxs = async () => {
+    const { data } = await getGrpTxs(grpId);
+    setChatData(data.txs);
+  };
+
   const handleUpiPayment = async () => {
     try {
       let linkToPay = `upi://pay?pa=${settleUpiId}&am=${settleAmount}`;
@@ -77,7 +82,12 @@ const GroupChat = () => {
 
   useEffect(() => {
     handleGrpExpenseForSettle();
+    handleGroupTxs();
   }, [userId]);
+
+  useEffect(() => {
+    handleGroupTxs();
+  }, [isFocus]);
 
   return (
     <>
