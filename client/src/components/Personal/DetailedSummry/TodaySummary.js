@@ -1,29 +1,15 @@
-import { View, Text, Dimensions, ScrollView } from "react-native";
+import { View, Text, ScrollView } from "react-native";
 import React, { useEffect, useState } from "react";
-import { AntDesign } from "@expo/vector-icons";
-import * as Progress from "react-native-progress";
-import { LineChart } from "react-native-chart-kit";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Card from "../Card";
 import { fetchTodaysTransactions } from "../../../api/user";
 import { Picker } from "@react-native-picker/picker";
 import moment from "moment";
-const data = {
-  labels: ["1", "2", "3", "4", "5", "6"],
-  datasets: [
-    {
-      data: [160, 105, 142, 130, 209, 130],
-      color: (opacity = 1) => `rgba(134, 65, 244, ${opacity})`, // optional
-      strokeWidth: 2, // optional
-    },
-  ],
-  //   legend: ["Rainy Days"], // optional
-};
 
 const TodaySummary = ({ navigation }) => {
   const [userId, setUserId] = useState("");
   const [transactions, setTransactions] = useState([]);
-  const [selectDay, setSelectDay] = useState();
+  const [selectDay, setSelectDay] = useState("Today");
   const [date, setDate] = useState(moment().subtract(0, "days"));
 
   const handleUserId = async () => {
@@ -44,6 +30,14 @@ const TodaySummary = ({ navigation }) => {
     handleTransaction();
   }, [userId, date]);
 
+  useEffect(() => {
+    if (selectDay === "Today") {
+      setDate(moment().subtract(0, "days"));
+    } else if (selectDay === "Yesterday") {
+      setDate(moment().subtract(1, "days"));
+    }
+  }, [selectDay]);
+
   return (
     <ScrollView className="mx-3" showsVerticalScrollIndicator={false}>
       {/* drop down for selection of category and date */}
@@ -53,15 +47,10 @@ const TodaySummary = ({ navigation }) => {
           selectedValue={selectDay}
           onValueChange={(itemValue, itemIndex) => {
             setSelectDay(itemValue);
-            if (selectDay === "Today") {
-              setDate(moment().subtract(0, "days"));
-            } else if (selectDay === "Yesterday") {
-              setDate(moment().subtract(1, "days"));
-            }
           }}
         >
-          <Picker.Item label="Yesterday" value="Today" />
-          <Picker.Item label="Today" value="Yesterday" />
+          <Picker.Item label="Today" value="Today" />
+          <Picker.Item label="Yesterday" value="Yesterday" />
         </Picker>
       </View>
       {/* Berakdown - category wise */}
