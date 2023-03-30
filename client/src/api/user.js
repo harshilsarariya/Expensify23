@@ -250,6 +250,32 @@ export const getUserInfo = async (userId) => {
   }
 };
 
+export const getAllTxs = async (userId) => {
+  try {
+    const { data } = await client.get(`/user/txs/${userId}`);
+    return data;
+  } catch (error) {
+    const { response } = error;
+    if (response?.data) {
+      return response.data;
+    }
+    return { error: error.message || error };
+  }
+};
+
+export const clearAllTxs = async (userId) => {
+  try {
+    const { data } = await client.get(`/user/clear-txs/${userId}`);
+    return data;
+  } catch (error) {
+    const { response } = error;
+    if (response?.data) {
+      return response.data;
+    }
+    return { error: error.message || error };
+  }
+};
+
 // register expo token
 export const saveExpoToken = async (token, id) => {
   try {

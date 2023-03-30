@@ -1,4 +1,5 @@
 import {
+  useIsFocused,
   useNavigation,
   useRoute,
 } from "@react-navigation/native";
@@ -17,35 +18,51 @@ import GeneralNavbar from "../../components/GeneralNavbar";
 import ChatCard from "../../components/split/ChatCard";
 import * as Linking from "expo-linking";
 import { FontAwesome } from "@expo/vector-icons";
-import { grpSettle, grpSettleExpense } from "../../api/group";
+import { grpExpenseForSettle, settleExpense } from "../../api/group";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import bgImg from "../../assets/images/bg-dark.jpg";
-import { getUserInfo } from "../../api/user";
 
 const GroupChat = () => {
   const route = useRoute();
-  const { item } = route.params;
+  const isFocus = useIsFocused();
+  const navigation = useNavigation();
+
+  const { item, grpId } = route.params;
+
   const [ModalOpen, setModalOpen] = useState(false);
   const [paymentModalOpen, setPaymentModalOpen] = useState(false);
   const [userId, setUserId] = useState("");
   const [chatData, setChatData] = useState(item.txs);
-  const [userInfo, setUserInfo] = useState({});
-  const navigation = useNavigation();
-  const [settleMemberId, setSettleMemberId] = useState("");
+  const [settleAmount, setSettleAmount] = useState(0);
   const [settleUpiId, setSettleUpiId] = useState("");
   const scrollViewRef = useRef();
+
+  const [expenseSettleData, setExpenseSettleData] = useState([]);
+
   const handleUserId = async () => {
     setUserId(await AsyncStorage.getItem("userId"));
   };
 
-  const handleOnLinkPress = async (url) => {
+  const handleGrpExpenseForSettle = async () => {
+    const data = await grpExpenseForSettle(userId, grpId);
+    setExpenseSettleData(data);
+  };
+
+  const handleSettleExpense = async () => {
+    const data = await settleExpense(grpId, {
+      userId: userId,
+      amount: settleAmount,
+    });
+    Alert.alert(data?.message);
+  };
+
+  const handleUpiPayment = async () => {
     try {
-      const res = await Linking.canOpenURL(url);
-      console.log(url);
+      let linkToPay = `upi://pay?pa=${settleUpiId}&am=${settleAmount}`;
+      const res = await Linking.canOpenURL(linkToPay);
       if (res) {
-        Linking.openURL(url);
-        await grpSettleExpense(item._id, userId, settleMemberId);
-        handleName();
+        Linking.openURL(linkToPay);
+        handleSettleExpense();
       } else {
         Alert.alert("Invalid URL", "Can't open broken link!");
       }
@@ -54,50 +71,22 @@ const GroupChat = () => {
     }
   };
 
-  const handleName = async () => {
-    let myArr = new Array();
-    setUserInfo([]);
-    item?.members?.map(async (val, idx) => {
-      const data = await getUserInfo(val);
-      let settleData = 0;
-      if (idx) {
-        settleData = await grpSettle(item._id, userId, val);
-      }
-      let flag = false,
-        wuFlag = false;
-      item?.txs.map((it) => {
-        it.withUsers.forEach((wu) => {
-          wuFlag = wu.userId === val;
-          return;
-        });
-        if (wuFlag) {
-          flag = it?.settledBy.includes(val);
-        }
-      });
-      myArr.push({
-        name: data.name,
-        settleData: settleData,
-        visible: !flag,
-      });
-    });
-    setUserInfo(myArr);
-  };
-
   useEffect(() => {
     handleUserId();
   }, []);
 
   useEffect(() => {
-    handleName();
+    handleGrpExpenseForSettle();
   }, [userId]);
 
   return (
     <>
       <GeneralNavbar
-        title={item.name}
-        grpId={item._id}
+        title={item?.name}
+        grpId={grpId}
         showDeleteIcon={true}
         deleteHandle={"grpDelete"}
+        tag=""
         navigationPath={"MainSplit"}
       />
       <ImageBackground
@@ -129,50 +118,47 @@ const GroupChat = () => {
                 </TouchableOpacity>
               </View>
               <View className="my-4">
-                {item.members.map((val, idx) => (
-                  <View key={idx}>
-                    {val !== userId && userInfo[idx]?.visible && (
-                      <View className="p-4 flex flex-row justify-between items-center">
-                        <View className="flex flex-row  flex-1 space-x-4 items-center">
-                          <View>
-                            <Image
-                              className="w-12 h-12 rounded-full"
-                              source={require("../../assets/images/avatar2.png")}
-                            />
-                          </View>
-                          <View>
-                            <Text className="text-white font-medium">
-                              {userInfo[idx]?.name}
-                            </Text>
-                            <Text className="text-emerald-400 text-base">
-                              <FontAwesome
-                                name="rupee"
-                                size={14}
-                                color="#34d399"
-                              />
-                              {userInfo[idx]?.settleData?.data}
-                            </Text>
-                          </View>
+                {expenseSettleData.map !== undefined &&
+                  expenseSettleData.map((item, idx) => (
+                    <View
+                      key={idx}
+                      className="p-4 flex flex-row justify-between items-center"
+                    >
+                      <View className="flex flex-row  flex-1 space-x-4 items-center">
+                        <View>
+                          <Image
+                            className="w-12 h-12 rounded-full"
+                            source={require("../../assets/images/avatar2.png")}
+                          />
                         </View>
-                        <TouchableOpacity
-                          onPress={() => {
-                            // setModalOpen(false);
-                            setSettleMemberId(item.members[idx]);
-                            setSettleUpiId(userInfo[idx].settleData.linkToPay);
-                            setPaymentModalOpen(true);
-
-                            // navigation.navigate("PaySettle");
-                          }}
-                          className="bg-[#2f3647] p-2 rounded-xl"
-                        >
-                          <Text className="text-center px-3 text-[#8885ea]">
-                            Settle
+                        <View>
+                          <Text className="text-white font-medium">
+                            {item.name}
                           </Text>
-                        </TouchableOpacity>
+                          <Text className="text-emerald-400 text-base">
+                            <FontAwesome
+                              name="rupee"
+                              size={14}
+                              color="#34d399"
+                            />
+                            {item.owes}
+                          </Text>
+                        </View>
                       </View>
-                    )}
-                  </View>
-                ))}
+                      <TouchableOpacity
+                        onPress={() => {
+                          setSettleAmount(item.owes);
+                          setSettleUpiId(item.upiId);
+                          setPaymentModalOpen(true);
+                        }}
+                        className="bg-[#2f3647] p-2 rounded-xl"
+                      >
+                        <Text className="text-center px-3 text-[#8885ea]">
+                          Settle
+                        </Text>
+                      </TouchableOpacity>
+                    </View>
+                  ))}
               </View>
             </View>
           </Modal>
@@ -209,12 +195,7 @@ const GroupChat = () => {
                         {
                           text: "Yes",
                           onPress: async () => {
-                            await grpSettleExpense(
-                              item._id,
-                              userId,
-                              settleMemberId
-                            );
-                            handleName();
+                            handleSettleExpense();
                           },
                         },
                         { text: "Decline", style: "cancel" },
@@ -223,14 +204,14 @@ const GroupChat = () => {
                   }}
                 >
                   <Text className="text-white tracking-widest text-base uppercase">
-                    record as cash payment
+                    Record as cash payment
                   </Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                   className="bg-[#5F68D1] w-full p-2 mt-2 items-center rounded-md"
                   onPress={() => {
                     setPaymentModalOpen(false);
-                    handleOnLinkPress(settleUpiId);
+                    handleUpiPayment();
                   }}
                 >
                   <Text className="text-white tracking-widest text-base uppercase">
@@ -254,7 +235,7 @@ const GroupChat = () => {
               {chatData.map((chatItem, idx) => {
                 return (
                   <View className="my-2" key={idx}>
-                    <ChatCard item={chatItem} grpId={item._id} />
+                    <ChatCard item={chatItem} grpId={grpId} />
                   </View>
                 );
               })}
@@ -274,7 +255,11 @@ const GroupChat = () => {
             <TouchableOpacity
               className="font-medium rounded-lg p-2 w-2/5  bg-[#6561D2] uppercase py-2 text-center"
               onPress={() => {
-                navigation.navigate("GrpAddExpense", { item });
+                navigation.navigate("GrpAddExpense", {
+                  item,
+                  grpId: grpId,
+                  tag: "add",
+                });
               }}
             >
               <Text className="text-[#d6d9e3] text-base mx-auto">

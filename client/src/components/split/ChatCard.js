@@ -10,12 +10,10 @@ import { useEffect, useState } from "react";
 const ChatCard = ({ item, grpId }) => {
   const navigation = useNavigation();
   const [userId, setUserId] = useState("");
-
+  const [letUserMe, setLetUserMe] = useState(false);
   const handleUserId = async () => {
     setUserId(await AsyncStorage.getItem("userId"));
   };
-
-  let letUserMe;
 
   useEffect(() => {
     handleUserId();
@@ -24,7 +22,7 @@ const ChatCard = ({ item, grpId }) => {
   useEffect(() => {
     item?.withUsers.forEach((wu) => {
       if (wu.userId === userId) {
-        letUserMe = wu;
+        setLetUserMe(true);
       }
     });
   }, []);
@@ -64,7 +62,7 @@ const ChatCard = ({ item, grpId }) => {
               <View className="h-10 justify-center flex items-center">
                 <Text className="text-rose-300 text-2xl">
                   <FontAwesome name="rupee" size={20} color="#fda4af" />{" "}
-                  {letUserMe.owe}
+                  {Math.round(item?.lent)}
                 </Text>
               </View>
               <View className="bg-[#2E3442] p-4">

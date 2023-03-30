@@ -1,5 +1,5 @@
-import { View, Text, TouchableOpacity } from "react-native";
-import React from "react";
+import { View, Text, TouchableOpacity, Alert } from "react-native";
+import React, { useEffect, useState } from "react";
 import GeneralNavbar from "../GeneralNavbar";
 import {
   Ionicons,
@@ -10,50 +10,90 @@ import {
 import { useNavigation } from "@react-navigation/native";
 import * as FileSystem from "expo-file-system";
 import * as Sharing from "expo-sharing";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { clearAllTxs, getAllTxs } from "../../api/user";
+import Papa from "papaparse";
+
 const Setting = () => {
   const navigation = useNavigation();
+  const [userId, setUserId] = useState("");
+  const [userInfo, setUserInfo] = useState([{}]);
 
-  const handleExportData = async () => {
-    await shareFile(
-      await saveFile(`[
-      {
-          "Column 1": "Name",
-          "Column 2": "Surname",
-          "Column 3": "Email",
-          "Column 4": "Info"
-      }
-    ]`)
-    );
+  const handleUserId = async () => {
+    setUserId(await AsyncStorage.getItem("userId"));
   };
 
-  const saveFile = async (data) => {
+  const handleUserData = async () => {
+    const data = await getAllTxs(userId);
+    setUserInfo(data.data);
+  };
+
+  const createCSV = async (data) => {
+    const header = ["Description", "Category", "Amount"];
+    const csvData = [
+      header,
+      ...data.map((item) => [item.description, item.category, item.amount]),
+    ];
+    return new Promise((resolve, reject) => {
+      Papa.parse(Papa.unparse(csvData), {
+        complete: (results) => resolve(results.data.join("\n")),
+        error: (err) => reject(err),
+      });
+    });
+  };
+
+  const saveFile = async () => {
+    const csvData = await createCSV(userInfo);
     let directoryUri = FileSystem.documentDirectory;
 
-    let fileUri = directoryUri + "name.csv";
+    let fileUri = directoryUri + "ExpenseTracker.csv";
 
-    await FileSystem.writeAsStringAsync(fileUri, data, {
+    await FileSystem.writeAsStringAsync(fileUri, csvData.toString(), {
       encoding: FileSystem.EncodingType.UTF8,
     });
 
-    return fileUri;
+    await shareFile(fileUri);
   };
-
   const shareFile = async (fileUri) => {
     const canShare = await Sharing.isAvailableAsync();
 
     // Check if permission granted
     if (canShare) {
       try {
-        const res = await Sharing.shareAsync(fileUri);
+        await Sharing.shareAsync(fileUri);
         return true;
-        4;
       } catch {
         return false;
       }
     } else {
-      alert("Você precisa dar permissão para Compartilhar.");
+      alert("Permission not granted!");
     }
   };
+
+  const handleClearTxs = async () => {
+    Alert.alert("Clear All Expenses", "Are you sure you want to proceed?", [
+      {
+        text: "Yes",
+        onPress: async () => {
+          const data = await clearAllTxs(userId);
+          if (data?.success) {
+            Alert.alert(data.message);
+          } else {
+            Alert.alert(data.message); 
+          }
+        },
+      },
+      { text: "Decline", style: "cancel" },
+    ]);
+  };
+
+  useEffect(() => {
+    handleUserId();
+  }, []);
+
+  useEffect(() => {
+    handleUserData();
+  }, [userId]);
 
   return (
     <View>
@@ -78,14 +118,19 @@ const Setting = () => {
         <View className="flex flex-row space-x-6 mx-auto my-2">
           <TouchableOpacity
             onPress={() => {
-              handleExportData();
+              saveFile();
             }}
             className="bg-[#2A2E39] w-36 p-2 pl-3 rounded-lg"
           >
             <MaterialIcons name="cloud-download" size={24} color="#43ab39" />
             <Text className="text-white text-base mt-2">Export Data</Text>
           </TouchableOpacity>
-          <TouchableOpacity className="bg-[#2A2E39] w-36 p-2 pl-3 rounded-lg">
+          <TouchableOpacity
+            onPress={() => {
+              handleClearTxs();
+            }}
+            className="bg-[#2A2E39] w-36 p-2 pl-3 rounded-lg"
+          >
             <MaterialCommunityIcons
               name="cloud-refresh"
               size={24}

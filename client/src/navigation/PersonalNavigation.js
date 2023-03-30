@@ -11,12 +11,10 @@ import { saveExpoToken } from "../api/user";
 import * as Notifications from "expo-notifications";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 const Stack = createStackNavigator();
-
 const PersonalNavigation = ({ setTabShown, navigation }) => {
   const isFocused = useIsFocused();
   const responseListener = useRef();
   const notificationListener = useRef();
-  const [userId, setUserId] = useState("");
 
   // creating expo push token for notification
   const registerForPushNotificationsAsync = async () => {
@@ -85,8 +83,7 @@ const PersonalNavigation = ({ setTabShown, navigation }) => {
 
   const handleUserId = async () => {
     await AsyncStorage.setItem("userId", "63f079bc145c6eb4ec252f67");
-    const id = await AsyncStorage.getItem("userId");
-    setUserId(id);
+    await AsyncStorage.getItem("userId");
   };
 
   return (

@@ -39,11 +39,9 @@ export const getGrpInfo = async (grpID) => {
   }
 };
 
-export const grpSettle = async (grpID, ofUserdId, withUserId) => {
+export const settleExpense = async (grpID, obj) => {
   try {
-    const { data } = await client.get(
-      `/grp/${grpID}/tx/settle/${ofUserdId}/${withUserId}`
-    );
+    const { data } = await client.put(`/grp/settle/${grpID}`, obj);
     return data;
   } catch (error) {
     const { response } = error;
@@ -54,11 +52,9 @@ export const grpSettle = async (grpID, ofUserdId, withUserId) => {
   }
 };
 
-export const grpSettleExpense = async (grpID, ofUserdId, withUserId) => {
+export const grpExpenseForSettle = async (userId, grpID) => {
   try {
-    const { data } = await client.put(
-      `/grp/${grpID}/tx/settle/${ofUserdId}/${withUserId}`
-    );
+    const { data } = await client.get(`/grp/exp/${userId}/${grpID}`);
     return data;
   } catch (error) {
     const { response } = error;

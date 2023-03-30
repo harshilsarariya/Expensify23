@@ -106,7 +106,7 @@ const ExpenseDetails = () => {
                   </Text>
                   <Text className="text-white basis-1/5">
                     <FontAwesome name="rupee" size={13} color="white" />{" "}
-                    {wu.owe}
+                    {item.amount / item.withUsers.length}
                   </Text>
                 </View>
               );

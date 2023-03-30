@@ -14,7 +14,7 @@ import { addTransaction, updateTransaction } from "../../api/user";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import RNDateTimePicker from "@react-native-community/datetimepicker";
 
-const AddExpense = ({ setTabShown, navigation }) => {
+const AddExpense = ({ navigation, setTabShown }) => {
   const [date, setDate] = useState(new Date());
   const [showDate, setShowDate] = useState(false);
   const [isEnabled, setIsEnabled] = useState(false);
@@ -23,7 +23,6 @@ const AddExpense = ({ setTabShown, navigation }) => {
   const [category, setCategory] = useState("General");
   const [userId, setUserId] = useState("");
   const [active, setActive] = useState("");
-  const isFocused = useIsFocused();
 
   const route = useRoute();
   const { item, tag } = route.params;
@@ -79,10 +78,6 @@ const AddExpense = ({ setTabShown, navigation }) => {
     setTabShown(false);
     handleUserId();
   }, []);
-
-  useEffect(() => {
-    setTabShown(false);
-  }, [isFocused]);
 
   return (
     <>
