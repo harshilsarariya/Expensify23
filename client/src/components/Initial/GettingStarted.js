@@ -60,7 +60,6 @@ const GettingStarted = ({ navigation }) => {
           </Text>
           <TouchableOpacity
             onPress={() => {
-              storeData();
               navigation.navigate("MobileNumber");
             }}
             className="bg-[#5F68D1] w-screen p-2 mt-2 items-center"
