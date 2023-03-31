@@ -1,8 +1,6 @@
-
 # Daily Expense Tracker - Expensify
 
 Expensify is an mobile application used to keep a log on daily expense, split it between friends and roommates, so that everyone gets paid off. The application is developed in react-native framework. We have provided a better UI which helps user to view his dashboard with charts and graphs for better understanding.
-
 
 ## Features
 
@@ -16,17 +14,16 @@ Expensify is an mobile application used to keep a log on daily expense, split it
 
 Here we use these technical components :
 
-<img src="https://img.shields.io/badge/react%20native-v0.70.5-brightgreen"> 
+<img src="https://img.shields.io/badge/react%20native-v0.70.5-brightgreen">
 
 <img src="https://img.shields.io/badge/Node-v16.15.0-yellow">
 <img src="https://img.shields.io/badge/Tailwind-v3.0.24-blue" alt="ruby version">
 <img src="https://img.shields.io/badge/Mongodb-v12.2.0-orange">
 <img src="https://img.shields.io/badge/Express-4.18.1-lightgrey">
 
-**Client:** React,  TailwindCSS
+**Client:** React, TailwindCSS
 
 **Server:** Node, Express, MongoDB
-
 
 ## Upcoming Improvements
 
@@ -59,10 +56,3 @@ Start the server
 ```bash
   npm start
 ```
-
-
-## Screenshots
-
-![App Screenshot](./1.jpeg)
-![App Screenshot](./2.jpeg)
-![App Screenshot](./3.jpeg)
