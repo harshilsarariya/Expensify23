@@ -15,14 +15,7 @@ import { AntDesign } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { createUser, verifyOTP } from "../../api/user";
 
-const config = {
-  method: "POST",
-  headers: {
-    "content-type": "application/json",
-  },
-};
-
-const EnterOTP = ({ phoneNumber }) => {
+const EnterOTP = ({ phoneNumber, onLogin }) => {
   const navigation = useNavigation();
   const [otp, setOtp] = useState("");
 
@@ -32,17 +25,13 @@ const EnterOTP = ({ phoneNumber }) => {
       const data = await verifyOTP(phoneNumber, otp);
       // console.log(data);
       // if (data?.valid) {
-      const userData = await createUser(
-        {
-          phoneNumber: phoneNumber,
-        },
-        config
-      );
+      const userData = await createUser({
+        phoneNumber: phoneNumber,
+      });
 
       await AsyncStorage.setItem("phoneNumber", phoneNumber);
-      await AsyncStorage.setItem("userId", userData.data._id);
-      await AsyncStorage.setItem("isVerified", "true");
-
+      await AsyncStorage.setItem("userId", userData.userId);
+      onLogin();
       navigation.navigate("Personal");
       // } else {
       //   Alert.alert("Invalid OTP", "Please enter correct OTP!", [

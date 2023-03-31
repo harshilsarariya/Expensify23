@@ -58,7 +58,6 @@ const AddExpense = ({ navigation, setTabShown }) => {
   };
 
   const handleUserId = async () => {
-    await AsyncStorage.setItem("userId", "63f079bc145c6eb4ec252f67");
     const id = await AsyncStorage.getItem("userId");
     setUserId(id);
     if (tag === "edit") {

@@ -6,19 +6,14 @@ const SplashScreen = () => {
   return (
     <>
       <StatusBar backgroundColor="#5F68D1" barStyle="light-content" />
-      <View className="h-16 bg-[#5F68D1] items-center">
+      <View className="h-screen bg-[#5F68D1] items-center flex justify-center">
         <Image
-          style={{ width: 80, height: 80, borderRadius: 10, marginTop: 20 }}
+          style={{ width: 120, height: 120, borderRadius: 10, marginTop: 20 }}
           source={AppIcon}
         />
-      </View>
-      <View className=" h-screen bg-[#1E2128]">
-        <View className="flex items-center justify-center mt-16">
-          <Text className="text-white text-2xl font-medium">Welcome to</Text>
-          <Text className="text-[#6a71b8] text-2xl font-extrabold tracking-wide">
-            Expensify
-          </Text>
-        </View>
+        <Text className="text-white text-3xl font-extrabold tracking-wide mt-3">
+          Expensify
+        </Text>
       </View>
     </>
   );
