@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const client = axios.create({
-  baseURL: "http://192.168.2.104:5000/api",
+  baseURL: "https://expensify-7psl.onrender.com/api",
 });
 
 export default client;
