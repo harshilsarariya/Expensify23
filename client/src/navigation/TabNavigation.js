@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { View, Text, TouchableOpacity } from "react-native";
+import { View, Text, TouchableOpacity, ActivityIndicator } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { useNavigation } from "@react-navigation/native";
 import { FontAwesome5, Feather } from "@expo/vector-icons";
@@ -7,10 +7,35 @@ import InitialNavigation from "./InitialNavigation";
 import PersonalNavigation from "./PersonalNavigation";
 import ProfileNavigation from "./ProfileNavigation";
 import SplitNavigation from "./SplitNavigation";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import SplashScreen from "../components/Initial/SplashScreen";
 const Tab = createBottomTabNavigator();
 const TabNavigation = () => {
   const navigation = useNavigation();
   const [tabShown, setTabShown] = useState(true);
+  const [userLoggedIn, setUserLoggedIn] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    checkLoggedInStatus();
+  }, []);
+
+  const checkLoggedInStatus = async () => {
+    const userLoggedIn = await AsyncStorage.getItem("userLoggedIn");
+    if (userLoggedIn) {
+      setUserLoggedIn(true);
+    }
+    setIsLoading(false);
+  };
+
+  const handleLogin = async () => {
+    await AsyncStorage.setItem("userLoggedIn", "true");
+    setUserLoggedIn(true);
+  };
+
+  if (isLoading) {
+    return <SplashScreen />;
+  }
 
   return (
     <>
@@ -18,21 +43,24 @@ const TabNavigation = () => {
         screenOptions={{
           headerShown: false,
         }}
-        initialRouteName="Personal"
+        initialRouteName="Initial"
       >
-        <Tab.Screen
-          name="Initial"
-          options={{
-            tabBarStyle: { display: "none" },
-          }}
-        >
-          {(props) => (
-            <InitialNavigation
-              navigation={navigation}
-              setTabShown={setTabShown}
-            />
-          )}
-        </Tab.Screen>
+        {!userLoggedIn && (
+          <Tab.Screen
+            name="Initial"
+            options={{
+              tabBarStyle: { display: "none" },
+            }}
+          >
+            {(props) => (
+              <InitialNavigation
+                onLogin={handleLogin}
+                navigation={navigation}
+                setTabShown={setTabShown}
+              />
+            )}
+          </Tab.Screen>
+        )}
         <Tab.Screen
           name="Personal"
           options={{
