@@ -54,11 +54,17 @@ const GeneralNavbar = (props) => {
     <View>
       <View className="flex flex-row justify-between items-center mt-2 mx-4 pb-2">
         <View className="flex flex-row">
-          <TouchableOpacity
-            onPress={() => navigation.navigate(props.navigationPath)}
-          >
-            <Ionicons name="chevron-back" size={24} color="white" />
-          </TouchableOpacity>
+          {props.title !== "Adjust Split" && (
+            <TouchableOpacity
+              onPress={() => {
+                props.title !== "Add Expense"
+                  ? navigation.navigate(props.navigationPath)
+                  : navigation.goBack();
+              }}
+            >
+              <Ionicons name="chevron-back" size={24} color="white" />
+            </TouchableOpacity>
+          )}
           <Text className="text-white ml-10 text-lg">{props.title}</Text>
         </View>
         <View className="flex flex-row items-center space-x-4">

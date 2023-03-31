@@ -28,9 +28,9 @@ export const verifyOTP = async (phoneNumber, otp) => {
   }
 };
 
-export const createUser = async (object, config) => {
+export const createUser = async (object) => {
   try {
-    const data = await client.post(`/user/add`, object, config);
+    const { data } = await client.post(`/user/add`, object);
     return data;
   } catch (error) {
     const { response } = error;

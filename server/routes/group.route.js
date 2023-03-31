@@ -224,6 +224,21 @@ router.put("/:grpId/tx/:txId/update", (req, res) => {
     });
 });
 
+// get group transactions
+router.get("/:grpId/txs", (req, res) => {
+  const { grpId } = req.params;
+  if (!grpId)
+    return res.json({ success: false, msg: "Group Id cannot  be  empty!" });
+  GroupModel.findOne({ _id: grpId })
+    .select("txs")
+    .then((result) => {
+      return res.json({ success: true, data: result });
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+});
+
 // # get all groups
 router.get("/get/all", (req, res) => {
   GroupModel.find({}).then((result) => {

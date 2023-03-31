@@ -2,16 +2,8 @@ import React from "react";
 import { View, Text, StatusBar, Image, TouchableOpacity } from "react-native";
 import { AntDesign, MaterialIcons } from "@expo/vector-icons";
 import AppIcon from "../../assets/images/AppIcon.jpg";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const GettingStarted = ({ navigation }) => {
-  const storeData = async () => {
-    try {
-      await AsyncStorage.setItem("isNewUser", "true");
-    } catch (e) {
-      console.log(e);
-    }
-  };
   return (
     <>
       <StatusBar backgroundColor="#5F68D1" barStyle="light-content" />

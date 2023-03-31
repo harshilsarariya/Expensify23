@@ -3,8 +3,18 @@ const moment = require("moment");
 const router = require("express").Router();
 
 // insert user
-router.post("/add", (req, res) => {
+router.post("/add", async (req, res) => {
   const { phoneNumber } = req.body;
+
+  let user = await UserModel.findOne({ phoneNumber: phoneNumber });
+
+  if (user) {
+    return res.json({
+      success: true,
+      message: "User already created!",
+      userId: user._id,
+    });
+  }
 
   const newUser = new UserModel({
     phoneNumber,

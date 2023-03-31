@@ -15,6 +15,7 @@ const PersonalNavigation = ({ setTabShown, navigation }) => {
   const isFocused = useIsFocused();
   const responseListener = useRef();
   const notificationListener = useRef();
+  const [userId, setUserId] = useState(null);
 
   // creating expo push token for notification
   const registerForPushNotificationsAsync = async () => {
@@ -35,7 +36,6 @@ const PersonalNavigation = ({ setTabShown, navigation }) => {
     }
 
     token = (await Notifications.getExpoPushTokenAsync()).data;
-    console.log(token);
     return token;
   };
 
@@ -54,10 +54,9 @@ const PersonalNavigation = ({ setTabShown, navigation }) => {
         shouldShowAlert: true,
       }),
     });
-    registerForPushNotificationsAsync().then((token) =>
-      // saveExpoToken(token, userId)
-      console.log(token)
-    );
+    registerForPushNotificationsAsync().then((token) => {
+      userId && saveExpoToken(token, userId);
+    });
     // This listener is fired whenever a notification is received while the app is foregrounded
     notificationListener.current =
       Notifications.addNotificationReceivedListener((notification) => {
@@ -82,8 +81,7 @@ const PersonalNavigation = ({ setTabShown, navigation }) => {
   }, []);
 
   const handleUserId = async () => {
-    await AsyncStorage.setItem("userId", "63f079bc145c6eb4ec252f67");
-    await AsyncStorage.getItem("userId");
+    setUserId(await AsyncStorage.getItem("userId"));
   };
 
   return (

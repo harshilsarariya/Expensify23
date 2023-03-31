@@ -7,8 +7,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Profile = ({ setTabShown }) => {
   const navigation = useNavigation();
-  const [name, setName] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState("9510142642");
+  const [name, setName] = useState("User");
+  const [phoneNumber, setPhoneNumber] = useState("");
   const isFocused = useIsFocused();
 
   const handleName = async () => {

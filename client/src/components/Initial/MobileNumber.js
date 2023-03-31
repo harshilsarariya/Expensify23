@@ -24,11 +24,11 @@ const MobileNumber = ({ setPhoneNumber, phoneNumber }) => {
       setLoading(true);
       const data = await sendOTP(phoneNumber);
       setLoading(false);
-      if (data.data?.status === "pending") {
-        navigation.navigate("EnterOTP");
-      } else {
-        Alert.alert("Error!", "Please enter valid number!", [{ text: "Okay" }]);
-      }
+      // if (data.data?.status === "pending") {
+      navigation.navigate("EnterOTP");
+      // } else {
+      //   Alert.alert("Error!", "Please enter valid number!", [{ text: "Okay" }]);
+      // }
     } catch (error) {
       console.log(error);
       Alert.alert("Error", error, [{ text: "Okay" }]);

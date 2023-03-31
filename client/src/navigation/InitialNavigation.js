@@ -7,7 +7,7 @@ import { useIsFocused } from "@react-navigation/native";
 
 const Stack = createStackNavigator();
 
-const InitialNavigation = ({ navigation, setTabShown }) => {
+const InitialNavigation = ({ navigation, setTabShown, onLogin }) => {
   const isFocused = useIsFocused();
   const [phoneNumber, setPhoneNumber] = useState("");
 
@@ -21,7 +21,7 @@ const InitialNavigation = ({ navigation, setTabShown }) => {
 
   return (
     <Stack.Navigator
-      initialRouteName="MobileNumber"
+      initialRouteName="GetStarted"
       screenOptions={{ headerShown: false }}
     >
       <Stack.Screen name="GetStarted">
@@ -37,7 +37,11 @@ const InitialNavigation = ({ navigation, setTabShown }) => {
       </Stack.Screen>
       <Stack.Screen name="EnterOTP">
         {(props) => (
-          <EnterOTP navigation={navigation} phoneNumber={phoneNumber} />
+          <EnterOTP
+            navigation={navigation}
+            onLogin={onLogin}
+            phoneNumber={phoneNumber}
+          />
         )}
       </Stack.Screen>
     </Stack.Navigator>
