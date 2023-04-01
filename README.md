@@ -36,13 +36,13 @@ We have thought some other features but it was not possible to implement in the 
 Clone the project
 
 ```bash
-  git clone https://github.com/t3j3ndrA/Expensify-DotSlash.git
+  git clone https://github.com/harshilsarariya/Expensify23.git
 ```
 
 Go to the project directory
 
 ```bash
-  cd expensify/client
+  cd Expensify23/client
 ```
 
 Install dependencies
@@ -54,5 +54,5 @@ Install dependencies
 Start the server
 
 ```bash
-  npm start
+  npx expo start
 ```
