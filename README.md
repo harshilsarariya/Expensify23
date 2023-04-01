@@ -21,7 +21,7 @@ Here we use these technical components :
 <img src="https://img.shields.io/badge/Mongodb-v12.2.0-orange">
 <img src="https://img.shields.io/badge/Express-4.18.1-lightgrey">
 
-**Client:** React, TailwindCSS
+**Client:** React Native, TailwindCSS
 
 **Server:** Node, Express, MongoDB
 
