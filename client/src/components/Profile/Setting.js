@@ -79,7 +79,7 @@ const Setting = () => {
           if (data?.success) {
             Alert.alert(data.message);
           } else {
-            Alert.alert(data.message); 
+            Alert.alert(data.message);
           }
         },
       },

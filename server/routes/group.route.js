@@ -243,7 +243,7 @@ router.get("/:grpId/txs", (req, res) => {
 router.get("/get/all/:userId", async (req, res) => {
   const user = await UserModel.findById(req.params.userId);
   const groupIds = user?.groups;
-  const groups = await GroupModel.find({ _id: { $in: groupIds } }, { name: 1 });
+  const groups = await GroupModel.find({ _id: { $in: groupIds } });
   res.send(groups);
 });
 

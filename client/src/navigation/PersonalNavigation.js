@@ -44,6 +44,12 @@ const PersonalNavigation = ({ setTabShown, navigation }) => {
   }, [isFocused]);
 
   useEffect(() => {
+    registerForPushNotificationsAsync().then((token) => {
+      userId && saveExpoToken(token, userId);
+    });
+  }, [userId]);
+
+  useEffect(() => {
     setTabShown(true);
     handleUserId();
   }, []);

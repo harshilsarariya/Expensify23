@@ -30,7 +30,7 @@ const EnterOTP = ({ phoneNumber, onLogin }) => {
       });
 
       await AsyncStorage.setItem("phoneNumber", phoneNumber);
-      await AsyncStorage.setItem("userId", userData.userId);
+      await AsyncStorage.setItem("userId", userData?.userId);
       onLogin();
       navigation.navigate("Personal");
       // } else {

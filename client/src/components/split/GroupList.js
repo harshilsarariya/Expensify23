@@ -54,6 +54,7 @@ const GroupList = () => {
                     navigator.navigate("GroupChat", {
                       grpId: item._id,
                       grpName: item.name,
+                      item: item,
                     });
                   }}
                   key={idx}

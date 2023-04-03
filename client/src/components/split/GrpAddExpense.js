@@ -198,7 +198,6 @@ const GrpAddExpense = (props) => {
                           {member.name}
                         </Text>
                       </View>
-                      
                     </View>
                   ))}
                 </ScrollView>

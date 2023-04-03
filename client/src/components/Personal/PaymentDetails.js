@@ -1,13 +1,21 @@
 import { View, Text, TouchableOpacity, Alert } from "react-native";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Ionicons, MaterialIcons, FontAwesome } from "@expo/vector-icons";
-import { useNavigation, useRoute } from "@react-navigation/native";
+import { useRoute } from "@react-navigation/native";
 import moment from "moment";
 import { deleteTransaction } from "../../api/user";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 const PaymentDetails = ({ navigation }) => {
   const route = useRoute();
   const { item } = route.params;
+  const [phoneNo, setPhoneNo] = useState("");
+
+  useEffect(() => {
+    const getUserPhoneNo = async () => {
+      setPhoneNo(await AsyncStorage.getItem("phoneNumber"));
+    };
+    getUserPhoneNo();
+  }, []);
 
   const handleDelete = async () => {
     Alert.alert("Delete Expense", "Are you sure?", [
@@ -109,7 +117,7 @@ const PaymentDetails = ({ navigation }) => {
           </View>
           <View className="flex flex-row justify-between mt-2">
             <Text className="text-[#C0BFC0]">Owner's Mobile No</Text>
-            <Text className="text-[#e4e3ea]">9510142642</Text>
+            <Text className="text-[#e4e3ea]">{phoneNo}</Text>
           </View>
         </View>
       </View>

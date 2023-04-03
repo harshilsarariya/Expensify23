@@ -83,7 +83,7 @@ const ExpenseDetails = () => {
               </Text>
               <Text className="text-white basis-1/5 items-center">
                 <FontAwesome name="rupee" size={13} color="white" />{" "}
-                {item.amount}
+                {Math.round(item.amount)}
               </Text>
             </View>
             <Text className="bg-[#2A2B47] text-white py-2 px-4">
@@ -106,7 +106,7 @@ const ExpenseDetails = () => {
                   </Text>
                   <Text className="text-white basis-1/5">
                     <FontAwesome name="rupee" size={13} color="white" />{" "}
-                    {item.amount / item.withUsers.length}
+                    {Math.round(item.amount / item.withUsers.length)}
                   </Text>
                 </View>
               );

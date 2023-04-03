@@ -93,7 +93,7 @@ const TabNavigation = () => {
       </Tab.Navigator>
       {/* Tab navigation */}
       {tabShown && (
-        <View className="bg-[#2A2E39] flex flex-row justify-between py-3 px-16 rounded-tl-3xl rounded-r-3xl  absolute bottom-0 w-full">
+        <View className="bg-[#2A2E39] flex flex-row justify-between py-3 px-16 rounded-tl-3xl rounded-tr-3xl  absolute bottom-0 w-full">
           <TouchableOpacity
             className="items-center"
             onPress={() => navigation.navigate("Personal")}

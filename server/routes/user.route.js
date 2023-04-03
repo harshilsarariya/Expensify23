@@ -25,7 +25,7 @@ router.post("/add", async (req, res) => {
     .then((result) => {
       return res.json({
         success: true,
-        data: result,
+        userId: result._id,
         msg: "User registered successfully",
       });
     })
