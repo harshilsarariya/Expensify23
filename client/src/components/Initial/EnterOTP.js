@@ -74,7 +74,9 @@ const EnterOTP = ({ phoneNumber, onLogin }) => {
           <View className="mt-2 absolute bottom-10 w-full">
             <TouchableOpacity
               className="bg-[#5651A0] p-2 rounded   items-center"
-              onPress={handleVerification}
+              onPress={() => {
+                handleVerification();
+              }}
             >
               <Text className="text-white text-base tracking-widest">
                 VERIFY

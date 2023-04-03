@@ -239,11 +239,12 @@ router.get("/:grpId/txs", (req, res) => {
     });
 });
 
-// # get all groups
-router.get("/get/all", (req, res) => {
-  GroupModel.find({}).then((result) => {
-    return res.json({ success: true, data: result });
-  });
+// # get all groups for respective user
+router.get("/get/all/:userId", async (req, res) => {
+  const user = await UserModel.findById(req.params.userId);
+  const groupIds = user?.groups;
+  const groups = await GroupModel.find({ _id: { $in: groupIds } }, { name: 1 });
+  res.send(groups);
 });
 
 // # settle expenses

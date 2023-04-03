@@ -27,12 +27,12 @@ const GroupChat = () => {
   const isFocus = useIsFocused();
   const navigation = useNavigation();
 
-  const { item, grpId } = route.params;
+  const { grpId, grpName } = route.params;
 
   const [ModalOpen, setModalOpen] = useState(false);
   const [paymentModalOpen, setPaymentModalOpen] = useState(false);
   const [userId, setUserId] = useState("");
-  const [chatData, setChatData] = useState(item.txs);
+  const [chatData, setChatData] = useState([]);
   const [settleAmount, setSettleAmount] = useState(0);
   const [settleUpiId, setSettleUpiId] = useState("");
   const scrollViewRef = useRef();
@@ -92,7 +92,7 @@ const GroupChat = () => {
   return (
     <>
       <GeneralNavbar
-        title={item?.name}
+        title={grpName}
         grpId={grpId}
         showDeleteIcon={true}
         deleteHandle={"grpDelete"}

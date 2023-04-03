@@ -13,10 +13,10 @@ export const createGroup = async (object) => {
   }
 };
 
-export const getAllGrp = async () => {
+export const getAllGrp = async (userId) => {
   try {
-    const { data } = await client.get(`/grp/get/all`);
-    return data.data;
+    const { data } = await client.get(`/grp/get/all/${userId}`);
+    return data;
   } catch (error) {
     const { response } = error;
     if (response?.data) {
