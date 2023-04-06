@@ -282,17 +282,22 @@ router.get("/fetchLatestTransactions/:id", async (req, res) => {
   });
 });
 
+// fetch all user transactions for the current month
 router.get("/fetchCurrentMonthTransactions/:id", async (req, res) => {
   const { id } = req.params;
 
+  // check if id is provided
   if (!id) return res.status(401).json({ error: "Invalid Request" });
 
+  // find user by id
   const user = await UserModel.findById(id);
 
+  // get current month in MM format
   let currMonth = moment(Date.now()).format("MM");
 
   let tx = new Array();
 
+  // filter transactions for current month
   user.personalTxs.map((item) => {
     if (
       item.txDate !== undefined &&
@@ -304,17 +309,25 @@ router.get("/fetchCurrentMonthTransactions/:id", async (req, res) => {
   res.json(tx);
 });
 
+// endpoint to fetch transactions for today by user id
 router.post("/fetchTodaysTransactions/:id", async (req, res) => {
   const { id } = req.params;
   const { date } = req.body;
+
+  // check if user id is provided in params
   if (!id) return res.status(401).json({ error: "Invalid Request" });
 
+  // find user by id
   const user = await UserModel.findById(id);
 
+  // get current month and date
   let currMonth = moment(date).format("MM");
   let currDate = moment(date).format("DD");
+
+  // array to hold transactions for today
   let tx = new Array();
 
+  // loop through user transactions and filter transactions for today
   user.personalTxs.map((item) => {
     if (
       item.txDate !== undefined &&
@@ -325,34 +338,42 @@ router.post("/fetchTodaysTransactions/:id", async (req, res) => {
     }
   });
 
+  // return transactions for today
   res.json(tx);
 });
 
-//  get  users transactions along with  categories
+// Get user's transactions along with categories
 router.get("/:id/cat", (req, res) => {
+  // Extract user id and category from request parameters and query string
   const { id } = req.params;
   const { category } = req.query;
 
-  if (!id) return res.json({ msg: "User id is  required" });
+  // Check if user id and category are present in the request
+  if (!id) return res.json({ msg: "User id is required" });
   if (!category) return res.json({ msg: "Category is required" });
 
+  // Find user with given id and category in personal transactions
   UserModel.findOne({ _id: id, "personalTxs.category": category })
     .select("personalTxs")
     .then((result) => {
+      // If user and category are found, filter the transactions by category
       if (result) {
         let filteredResult = result.personalTxs.filter(
           (item) => item.category === category
         );
+        // Return the filtered transactions
         return res.json({
           success: true,
           data: filteredResult || [],
         });
       } else {
+        // If no transactions found for the given category, return empty array
         return res.json({ success: true, data: [] });
       }
     })
     .catch((err) => {
       console.log(err);
+      // Handle any errors that occur
       return res.json({ success: false, err });
     });
 });
@@ -360,43 +381,49 @@ router.get("/:id/cat", (req, res) => {
 // get users transaction for all categories
 router.get("/:userId/catwise", async (req, res) => {
   const { userId } = req.params;
-  if (!userId) return res.status(401).json({ error: "Invalid Request" });
 
-  const user = await UserModel.find({
-    $and: [{ _id: userId }],
-  });
+  // If userId is not present in request parameter then return error
+  if (!userId) {
+    return res.status(401).json({ error: "Invalid Request" });
+  }
 
+  // Find user from UserModel using userId
+  const user = await UserModel.findById(userId);
+
+  // If user is not found, return error
+  if (!user) {
+    return res.status(404).json({ message: "User not found" });
+  }
+
+  // Create a new Map object to store data for each category
   const categoryMap = new Map();
 
-  user[0].personalTxs.map((item) => {
+  // Iterate through each transaction of the user and add data to the categoryMap
+  user.personalTxs.forEach((item) => {
     if (item?.category !== undefined) {
-      if (categoryMap.get(item?.category) === undefined) {
+      // If category is not already present in categoryMap, add it
+      if (!categoryMap.has(item?.category)) {
         categoryMap.set(item?.category, { expense: 0, total: 0 });
       }
+      // Increment the expense count for the category
       categoryMap.get(item?.category).expense++;
+      // If amount is present, add it to the total for the category
       if (item?.amount !== undefined) {
         categoryMap.get(item?.category).total += parseInt(item?.amount);
       }
     }
   });
 
-  const cateArr = new Array();
-
-  var iterator_obj = categoryMap.entries();
-  let arr;
-  while ((arr = iterator_obj.next().value)) {
-    cateArr.push(arr);
-  }
-
-  let finalObj = new Array();
-  for (let index = 0; index < cateArr.length; index++) {
-    let myObj = {
-      category: cateArr[index][0],
-      expense: cateArr[index][1].expense,
-      total: cateArr[index][1].total,
+  // Convert the categoryMap to an array of objects
+  const finalObj = Array.from(categoryMap, ([category, data]) => {
+    return {
+      category,
+      expense: data.expense,
+      total: data.total,
     };
-    finalObj.push(myObj);
-  }
+  });
+
+  // Send the final array of objects as response
   res.json(finalObj);
 });
 
