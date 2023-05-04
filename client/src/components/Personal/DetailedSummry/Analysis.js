@@ -59,17 +59,17 @@ const Analysis = ({ navigation }) => {
   const handleGraphData = async () => {
     const data = await fetchCurrentMonthTransactions(userId);
     let amt = 0;
-    setGraphData([0]);
+    const graphData = [0, 0, 0, 0, 0, 0];
     data.forEach !== undefined &&
-      data?.forEach((item) => {
-        if (parseInt(moment(item.txDate).format("DD")) % 5 === 0) {
-          setGraphData((prev) => [...prev, amt]);
-          amt = 0;
-        } else {
-          amt += item.amount;
-        }
+      data.forEach((item) => {
+        const day = parseInt(moment(item.txDate).format("DD"));
+
+        // Categorize the expense into the appropriate group
+        const index = Math.floor((day - 1) / 5);
+        graphData[index] += item.amount;
       });
-    setGraphData((prev) => [...prev, 0]);
+    setGraphData(graphData);
+    console.log(graphData);
   };
 
   const handleChartData = () => {
